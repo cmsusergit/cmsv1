@@ -57,12 +57,12 @@ export default{
     },
     methods: {
         removeDesignation(id){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'Do you Really want to Delete Designation?',
                     onConfirm: () => {
                         this.$store.dispatch('designationStore/remove_designation',id)
                         .then(rr=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Designation Removed Successfully",
                                   position: 'is-top',
@@ -71,7 +71,7 @@ export default{
                               this.loading=false;
                         })
                         .catch(error=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Error in Removing Designation\n"+error.response.data.error.message,
                                   position: 'is-top',

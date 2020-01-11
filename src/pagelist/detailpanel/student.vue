@@ -1,13 +1,16 @@
 <template>
     <div class="is-radiusless box tile is-vertical" style="width:100%;height:100%;">
 
+<!--
         <div class="is-fullwidth is-clearfix">
             <button @click="exportToPDF" style="margin-bottom:1em;" class="button is-radiusless is-info is-pulled-right">Export to PDF</button>
-        </div>
+        </div> -->
         <div id="profile" v-if="studentInfo" class="tile is-radiusless box" style="height:100%">
-          <figure class="image is-128x128" style="margin-right:1em;padding:.4em;border:1px solid lightgray;">
-            <img v-if="image" :src='image' alt="Image !Found">
+          <figure class="image is-128x128" style="margin-right:1em;">
+
+            <img v-if="image" :src='image' alt="Image !Found" style="border:1px solid;">
           </figure>
+
           <div class="tile">
             <table class="table is-bordered is-fullwidth" style="font-size:1em">
               <tr>
@@ -193,7 +196,7 @@ import config from '@/../static/test1.json'
             .then(rr=>{
                 this.studentInfo=rr.data
                 this.getDeptNameById(rr.data.fDeptId)
-                this.image=config.db_configuration.baseURL+'/containers/test1/download/'+this.studentInfo.stuEnroll+'.png'
+                this.image=config.db_configuration.baseURL+'/containers/student_photo/download/'+this.studentInfo.stuPhoto
                 this.getCourseNameById(rr.data.fCourseId)
                 this.getClassNameById(rr.data.fClassId)
                 this.getBatchNameById(rr.data.fBatchId)

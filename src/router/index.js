@@ -36,9 +36,11 @@ import MainAttdReport from '@/pagelist/report/main_attd_report'
 import Designation from '@/pagelist/designation/designation'
 import BatchName from '@/pagelist/batch/batch'
 import  SelfAppraisalReport from '@/pagelist/SelfAppraisal/appraisal_report'
-
 import  ProxyReport from '@/pagelist/proxy/proxyReport'
+import  SelfAppraisalSummary from '@/pagelist/SelfAppraisal/appraisal_summary'
 import  SelfAppraisalTF from '@/pagelist/SelfAppraisal/appraisal_tf'
+import  FeesCollection from '@/pagelist/feesdetail/feescollection'
+import  FeesDetailReport from '@/pagelist/feesdetail/feesreport'
 import {store} from '@/store/store.js'
 Vue.use(Router)
 const routeList=new Router({
@@ -68,7 +70,7 @@ const routeList=new Router({
             path: '/studentmanagement',
             name: 'StudentManagement',
             component: StudentManagement,
-            meta:{role:['CMSADMIN','STUDENT_COORD','HOD','DIRECTOR','PRINCIPAL','FACULTY']}
+            meta:{role:['CMSADMIN','ADMIN','STUDENT_COORD','HOD','DIRECTOR','PRINCIPAL','FACULTY']}
         },
         {
             path: '/employeemanagement',
@@ -191,6 +193,7 @@ const routeList=new Router({
         {
             path: '/lessonplan',
             name: 'LessonPlan',
+            props:true,
             component: LessonPlan,
             meta:{
               role:['CMSADMIN','FACULTY']
@@ -263,10 +266,29 @@ const routeList=new Router({
           meta:{role:['CMSADMIN','EMPLOYEE']}
         },
         {
-          path:'/selfappraisalreport',
+          path:'/selfappraisalreport/:facultyDetail?',
           name:'SelfAppraisalReport',
           component:SelfAppraisalReport,
+          props:true,
           meta:{role:['CMSADMIN','EMPLOYEE']}
+        },
+        {
+          path:'/selfappraisalsummary',
+          name:'SelfAppraisalSummary',
+          component:SelfAppraisalSummary,
+          meta:{role:['CMSADMIN','TRUSTEE','DIRECTOR','PRINCIPAL']}
+        },
+        {
+          path:'/feesdetail',
+          name:'FeesDetail',
+          component:FeesDetailReport,
+          meta:{role:['CMSADMIN','ADMIN','TRUSTEE','DIRECTOR','PRINCIPAL']}
+        },
+        {
+          path:'/feescollection',
+          name:'FeesCollection',
+          component:FeesCollection,
+          meta:{role:['CMSADMIN','ADMIN']}
         }
     ]
 })

@@ -10,6 +10,8 @@
           <option v-for="dp in departmentList" :value="dp.deptId">{{dp.deptName}}</option>
         </b-select>
     </b-field>
+
+
     </b-field>
     <b-field label="Description" expanded>
       <b-input v-model="locationInfo.locDescription" type="textarea" required></b-input>
@@ -39,7 +41,7 @@ export default {
   methods:{
       addLocation(){
         if(this.locationInfo.locId!==0){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'This Will Add New Location,Really want to Continue?',
                     onConfirm: () => {
                       this.locationInfo.locId=0
@@ -55,7 +57,7 @@ addLocation1(){
         this.loading=true;
         this.$store.dispatch('locStore/add_location',this.locationInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Location Added Successfully",
                     position: 'is-top',
@@ -64,7 +66,7 @@ addLocation1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Error in Adding Location\n"+error.response.data.error.message,
                     position: 'is-top',
@@ -77,14 +79,14 @@ addLocation1(){
         this.loading=true;
         this.$store.dispatch('locStore/update_location',this.locationInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Location Updated Successfully",
                     position: 'is-top',type: 'is-success'
                 });
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Error in Adding Location\n"+error.response.data.error.message,
                     position: 'is-top',type: 'is-danger'
                 });

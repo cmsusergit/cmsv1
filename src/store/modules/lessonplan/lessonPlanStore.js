@@ -2,36 +2,56 @@ import apiObject from '@/dataserve/student_serve.js'
 import _ from 'lodash'
 
 const state = {
+  lpList:[],
   lessonPlan:''
 };
 const getters = {
+  getLessonPlanList:(state)=>{
+    return state.lpList
+  },
+
+
   getLessonPlan:(state)=>{
     return state.lessonPlan
   }
 };
 const mutations = {
-
+SET_LESSONPLAN_LIST:(state,dt)=>{
+    state.lpList=dt;
+  },
 SET_LESSONPLAN:(state,dt)=>{
   state.lessonplan=dt;
 }
 };
-const actions = {
 
-add_lessonplan:({commit},dt)=>{
-  const url1='/LpIds/'
-  new Promise(function(resolve, reject) {
-      apiObject.post(url1,dt)
-        .then(rr=>{
-          commit('SET_LESSONPLAN',rr.data)
-          resolve(rr.data)
-        })
-        .catch(error=>{
-          console.log('****',error)
-          reject(error)
-        })
-  });
-},
-load_lessonplan:({commit},dt)=>{
+const actions = {
+  add_lessonplan:({commit},dt)=>{
+    const url1='/LpIds/'
+    new Promise(function(resolve, reject) {
+        apiObject.post(url1,dt)
+          .then(rr=>{
+            commit('SET_LESSONPLAN',rr.data)
+            resolve(rr.data)
+          })
+          .catch(error=>{
+            console.log('****',error)
+            reject(error)
+          })
+    });
+  },
+  load_lessonplan_list:({commit},inputOb)=>{
+    const ob={where:{ayId:inputOb.ayId,facultyId:inputOb.facultyId}}
+    const url1='/LpIds?filter='+JSON.stringify(ob)
+    apiObject.get(url1)
+      .then(response=>{
+        commit('SET_LESSONPLAN_LIST',response.data)
+      })
+      .catch(error=>{
+        console.log('****',error)
+        commit('SET_LESSONPLAN_LIST',null)
+      })
+  },
+  load_lessonplan:({commit},dt)=>{
     const ob={
       where:dt
     }

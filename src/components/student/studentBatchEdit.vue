@@ -108,7 +108,7 @@ export default {
                 })
                 .catch(e1=>{
                   console.log('****',e1);
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 5500,
                     message: e1.response.data.error.message,
                     position: 'is-top',
@@ -118,7 +118,7 @@ export default {
             })
             .catch(error=>{
               console.log('****',error);
-              this.$toast.open({
+              this.$buefy.toast.open({
                 duration: 5500,
                 message: error.response.data.error.message,
                 position: 'is-top',

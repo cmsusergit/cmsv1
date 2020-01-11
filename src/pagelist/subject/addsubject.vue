@@ -1,4 +1,4 @@
-<template>  
+<template>
     <div>
 
         <div class="dashboard is-radiusless box boxbg">
@@ -56,11 +56,10 @@ export default {
     }
   },
   methods:{
-
       save(){
         this.$store.dispatch('subjectStore/ADD_SUBJECT_INFO',this.subjectInfo)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Subject Added Successfully",
                     position: 'is-top',
@@ -68,7 +67,7 @@ export default {
                 });
               this.$router.push({name:"Subject"})
           }).catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -79,7 +78,7 @@ export default {
       update(){
         this.$store.dispatch('subjectStore/UPDATE_SUBJECT_INFO',this.subjectInfo)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Subject Updated Successfully",
                     position: 'is-top',
@@ -87,7 +86,7 @@ export default {
                });
               this.$router.push({name:"Subject"})
           }).catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -111,6 +110,8 @@ export default {
       this.populateSubjectById()
     }
   }
+
+
 }
 </script>
 <style scoped>

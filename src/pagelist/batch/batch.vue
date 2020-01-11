@@ -10,6 +10,7 @@
                      :data="batchList"
                      :paginated=true
                      :per-page=20
+
                      :loading='loading'>
                      <template slot-scope="props">
                     <b-table-column field="index" label="Sr.No."  centered>
@@ -56,21 +57,23 @@ export default{
     computed:{
       ...mapState(
         "classStore",[
-          "classList",
-          "batchList"
+          "classList"
     ]),
+      batchList(){
+        return this.$store.state.classStore.allBatchList
+      },
       deptList(){
         return this.$store.state.departmentList
       }
     },
     methods: {
         removeBatch(id){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'Do you Really want to Delete batch?',
                     onConfirm: () => {
                         this.$store.dispatch('classStore/remove_batch',id)
                         .then(rr=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Batch Removed Successfully",
                                   position: 'is-top',
@@ -79,7 +82,7 @@ export default{
                               this.loading=false;
                         })
                         .catch(error=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Error in Removing Batch\n"+error.response.data.error.message,
                                   position: 'is-top',
@@ -109,6 +112,7 @@ export default{
           })
           return dn
         }
+
     },
     mounted() {
         this.$store.dispatch('classStore/load_class_list');

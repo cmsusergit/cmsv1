@@ -16,10 +16,9 @@
                 </b-field>
             </b-field>
         </div>
-
           <b-tabs @change='tabChanged' type="is-toggle" v-if="timeTblId" expanded>
             <b-tab-item label="Faculty Timetable">
-              <TTFacultyReport :ayId="timeTblDt.academicYear" :timeTblId="timeTblId"/>
+              <TTFacultyReport :ayId="timeTblDt.academicYear" :facultyDept="timeTblDt.dept" :timeTblId="timeTblId"/>
             </b-tab-item>
             <b-tab-item label="Class Timetable">
               <TTClassReport  :ayId="timeTblDt.academicYear"/>
@@ -72,16 +71,17 @@
             }
         },
         watch: {
-            departmentList() {
-                if (!this.timeTblDt.dept){
-                    this.timeTblDt.dept = this.departmentList[0].deptName;
-                  }
-            },
+            // departmentList() {
+            //     if (!this.timeTblDt.dept){
+            //         this.timeTblDt.dept = this.departmentList[0].deptName;
+            //       }
+            // },
             currAcademicyearId(){
               this.timeTblDt.academicYear=this.currAcademicyearId
             },
             loggedInUser(){
               this.timeTblDt.dept=this.loggedInUser.deptId
+              this.deptChanged()
             }
         },
         mounted() {
@@ -106,14 +106,14 @@
                     console.log('****', error);
                     this.timeTblId="";
                 });
-              this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.timeTblDt.dept)
+              this.$store.dispatch('employeeStore/load_facultylist_by_dept',-1)
               this.$store.dispatch('load_class_list_by_dept',this.timeTblDt.dept);
               this.$store.dispatch("locStore/load_loc_list_dept",this.timeTblDt.dept)
             },
 
             tabChanged(indx){
               if(indx==0){
-                this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.timeTblDt.dept)
+                this.$store.dispatch('employeeStore/load_facultylist_by_dept',-1)
               }
               else if(indx==1){
                 this.$store.dispatch('load_class_list_by_dept',this.timeTblDt.dept);

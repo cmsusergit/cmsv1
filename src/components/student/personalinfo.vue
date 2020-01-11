@@ -49,15 +49,14 @@
                 </b-field>
                 <div style="margin:0 auto;">
                 <b-field class="file" expanded>
-                  <b-upload @input="photoChanged" v-model="file" style="margin-left:1em;" accept="image/png">
-                      <a class="button is-primary">
+                  <b-upload @input="photoChanged" v-model="file" style="margin-left:1em;" accept="image/*">
+                      <a class="is-medium is-radiusless is-info button">
                           <b-icon icon="upload"></b-icon>
                           <span>Upload Photo</span>
                       </a>
                   </b-upload>
-                  <figure v-if="image" class="image is-128x128" style="margin-left:1em;border:1px solid grey">
-                    <img :src="getImageURL" width="100px" alt="photo">
-                  </figure>
+
+                  <img :src="getImageURL" width="100px" alt="Image !Found" style="margin-left:.5em;border:1px solid;">
                 </b-field>
               </div>
                 </b-field>
@@ -96,9 +95,6 @@
                     <b-input @input.native="toUppercase" v-model="studentInfo.studentMotherLname" required></b-input>
                 </b-field>
               </b-field>
-
-
-
               <p class="is-5 has-text-weight-bold">Father's Detail</p>
               <b-field grouped style="border-top:1px solid gray;padding-top:1em;">
                 <b-field label="First Name" expanded>
@@ -142,7 +138,6 @@ export default {
               bgList:[
                   'A+','B+','A-','B-','O+','O-','AB+','AB-','-'
               ],
-              image:'',
               religionList:['Hindu','Muslim','Christian','Jain','Other'],
               nationalityList:['Indian','Foreign'],
               categoryList:['Open','SEBC','SC','ST','OTHER']
@@ -150,16 +145,12 @@ export default {
         },
         computed:{
           getImageURL(){
-                return config.db_configuration.baseURL+'/containers/test1/download/'+this.image
+                return config.db_configuration.baseURL+'/containers/student_photo/download/'+this.studentInfo.stuPhoto
             }
         },
         watch:{
-          studentInfo(v1){
-            this.image=v1.stuEnroll+'.png'
-          }
         },
         created() {
-          this.image=this.studentInfo.stuEnroll+'.png'
         },
         methods:{
           formatDt(d){
@@ -169,17 +160,17 @@ export default {
             this.uploadPhoto(ee)
           },
           uploadPhoto(ee){
-            const url1="/containers/test1/upload"
+            const url1="/containers/student_photo/upload"
             let fd=new FormData()
-            const image=this.studentInfo.stuEnroll+this.file[0].name.slice(this.file[0].name.lastIndexOf('.'),this.file[0].name.length);
+            const image=this.studentInfo.stuEnroll+'_'+this.file[0].name
             fd.append('image',this.file[0],image)
             apiObject.post(url1,fd)
               .then(response=>{
-                  this.image=image
+                  this.studentInfo.stuPhoto=image
                 })
                 .catch(error=>{
-                  console.log('----',error);
-                  this.image=''
+                  console.log('----',error)
+                  this.studentInfo.stuPhoto=''
               })
             .catch(error=>{
               console.log('****',error);

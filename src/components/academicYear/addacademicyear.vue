@@ -42,7 +42,7 @@ export default {
   methods:{
       addAcademicYear(){
         if(this.academicYearInfo.ayId!==0){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'This Will Add New Academic Year,Really want to Continue?',
                     onConfirm: () => {
                       this.academicYearInfo.ayId=0
@@ -58,7 +58,7 @@ addAcademicYear1(){
         this.loading=true;
         this.$store.dispatch('acadyearStore/add_academic_year',this.academicYearInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Academic Year Added Successfully",
                     position: 'is-top',
@@ -68,7 +68,7 @@ addAcademicYear1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Error\n"+error.response.data.error.message,
                     position: 'is-top',
@@ -81,7 +81,7 @@ addAcademicYear1(){
         this.loading=true;
         this.$store.dispatch('acadyearStore/update_academic_year',this.academicYearInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Acadamic Year Updated Successfully",
                     position: 'is-top',
@@ -91,7 +91,7 @@ addAcademicYear1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Error\n"+error.response.data.error.message,
                     position: 'is-top',

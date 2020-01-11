@@ -4,7 +4,7 @@
       <h1 class="is-radiusless has-background-grey box has-text-white is-size-4">Welcome {{userName}}</h1>
       <div class="tile">
         <div class="tile is-child box is-radiusless">
-          <h1 class="subtitle">Recent Circulars</h1>
+          <h1 class="subtitle">Circulars</h1>
           <CircularPanel :totalPage="4"/>
         </div>
           <div style="margin:.1em;"></div>

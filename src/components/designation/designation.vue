@@ -31,7 +31,7 @@ export default {
   methods:{
       addDesignation(){
         if(this.designationInfo.desgName!==''){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'This Will Add New Designation,Really want to Continue?',
                     onConfirm: () => {
                       this.addDesignation1();
@@ -47,7 +47,7 @@ addDesignation1(){
         this.designationInfo.desgId=0;
         this.$store.dispatch('designationStore/add_designation',this.designationInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Designation Added Successfully",
                     position: 'is-top',
@@ -56,7 +56,7 @@ addDesignation1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Error in Adding Designation\n"+error.response.data.error.message,
                     position: 'is-top',
@@ -70,14 +70,14 @@ addDesignation1(){
 
         this.$store.dispatch('designationStore/update_designation',this.designationInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Designation Updated Successfully",
                     position: 'is-top',type: 'is-success'
                 });
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Error in Updating Designation\n"+error.response.data.error.message,
                     position: 'is-top',type: 'is-danger'
                 });

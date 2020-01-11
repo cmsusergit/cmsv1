@@ -136,7 +136,7 @@ export default {
             })
             .catch(error=>{
               this.loading = false;
-              this.$toast.open({
+              this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',
@@ -156,7 +156,7 @@ export default {
           })
           .catch(error=>{
             this.$store.dispatch("studentStore/remove_student_info",id)
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: error.response.data.error.message,
                         position: 'is-top',
@@ -172,7 +172,7 @@ export default {
         }
         this.$store.dispatch("studentStore/add_pastacademic_for_student",ob)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: "Student Created",
                         position: 'is-top',
@@ -183,7 +183,7 @@ export default {
           })
           .catch(error=>{
             this.$store.dispatch("studentStore/remove_student_info",id)
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: error.response.data.error.message,
                         position: 'is-top',
@@ -215,7 +215,7 @@ export default {
                           }
                       })
                       .catch(error=>{
-                        this.$toast.open({
+                        this.$buefy.toast.open({
                           duration: 5500,
                           message: error.response.data.error.message,
                           position: 'is-top',
@@ -229,7 +229,7 @@ export default {
                   }
               })
               .catch(error=>{
-                this.$toast.open({
+                this.$buefy.toast.open({
                   duration: 5500,
                   message: error.response.data.error.message,
                   position: 'is-top',
@@ -238,7 +238,7 @@ export default {
               })
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
             duration: 5500,
             message: error.response.data.error.message,
             position: 'is-top',
@@ -275,7 +275,7 @@ export default {
   //         }
   //       })
   //       .catch(error=>{
-  //         this.$toast.open({
+  //         this.$buefy.toast.open({
   //           duration: 5500,
   //           message: error.response.data.error.message,
   //           position: 'is-top',
@@ -291,7 +291,7 @@ export default {
       this.$store.dispatch("studentStore/update_guardian_for_student",ob)
         .then(rr=>{
             this.updatePastAcademicList(id)
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: "Student updated",
                         position: 'is-top',
@@ -301,7 +301,7 @@ export default {
             this.$router.push({name:'StudentManagement'})
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
             duration: 5500,
             message: error.response.data.error.message,
             position: 'is-top',
@@ -318,7 +318,7 @@ export default {
       console.log(JSON.stringify(ob));
       this.$store.dispatch("studentStore/update_pastacademic_for_student",ob)
         .then(rr=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                       duration: 5500,
                       message: "Student with Enrollment Id " + rr.data.stuEnroll + " Created",
                       position: 'is-top',
@@ -328,7 +328,7 @@ export default {
             this.$router.push({name:'StudentManagement'})
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
             duration: 5500,
             message: error.response.data.error.message,
             position: 'is-top',
@@ -346,7 +346,7 @@ export default {
               this.updateGuardianList(id);
             }).catch(error=>{
             this.loading = false;
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',

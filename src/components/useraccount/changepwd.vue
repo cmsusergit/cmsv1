@@ -45,7 +45,7 @@
               changePassword(){
                 this.$store.dispatch('userAccountStore/changePassword',this.pwdOb)
                   .then(rr=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration: 5500,
                       message: 'Password Changed',
                       position: 'is-top',
@@ -54,7 +54,7 @@
                     this.$parent.close()
                   })
                   .catch(error=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                             duration: 5500,
                             message: error.response.data.error.message,
                             position: 'is-top',

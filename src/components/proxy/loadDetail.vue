@@ -103,7 +103,6 @@ export default {
   },
   watch:{
     recordId(v1,v2){
-      console.log('++++',v1);
       this.loadRecordInfo()
     }
     // recordInfo(v1,v2){

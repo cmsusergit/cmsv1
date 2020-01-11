@@ -40,7 +40,7 @@ export default {
       save(){
         this.$store.dispatch('userAccountStore/add_user_account',this.userInfo)
         .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "User Added Successfully",
                     position: 'is-top',
@@ -48,7 +48,7 @@ export default {
                 });
               this.$router.push({name:"UserAccount"})
           }).catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -60,7 +60,7 @@ export default {
       update(){
         this.$store.dispatch('userAccountStore/update_user_account',this.userInfo)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "User Account Updated Successfully",
                     position: 'is-top',
@@ -68,7 +68,7 @@ export default {
                });
                this.$router.push({name:"UserAccount"})
           }).catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',

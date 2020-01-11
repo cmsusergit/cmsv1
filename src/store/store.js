@@ -19,6 +19,7 @@ import todoStore from "./modules/todo/todo_Store.js"
 import circularStore from "./modules/Circular/circular_Store.js"
 import proxyStore from "./modules/proxy/proxyStore"
 import userAccountStore from "./modules/useraccount/useraccount"
+import feesDetailStore from "./modules/fees_detail/feedetail_Store"
 import selfAppraisalStore from "./modules/selfappraisal/selfAppraisal_Store"
 //import axios from 'axios'
 //import config from '@/../static/test1.json'
@@ -37,7 +38,6 @@ export const store = new Vuex.Store({
   },
   getters:{
       getDeptNameById:(state)=>(id)=>{
-
         return _.find(state.departmentList,{deptId:id})
       }
   },
@@ -68,9 +68,14 @@ export const store = new Vuex.Store({
 
 
     load_class_list_by_dept({commit},deptId){
-        if(!deptId || deptId=='All')
-            return;
-      const url1="/DepartmentInfos/"+deptId+"/studentClassInfos"
+        let url1=''
+        if(!deptId || deptId=='All'){
+          url1="/studentClassInfos"
+        }
+        else
+        {
+          url1="/DepartmentInfos/"+deptId+"/studentClassInfos"
+        }
       console.log(url1);
       apiObject.get(url1).then(response=>{
         commit('SET_CLASS_LIST',{dt:response.data})
@@ -128,6 +133,8 @@ export const store = new Vuex.Store({
     circularStore:circularStore,
     todoStore:todoStore,
     userAccountStore:userAccountStore,
-    selfAppraisalStore:selfAppraisalStore
+    selfAppraisalStore:selfAppraisalStore,
+
+    feesDetailStore:feesDetailStore
   }
 })

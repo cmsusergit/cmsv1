@@ -155,6 +155,7 @@ export default {
           this.generateLocationReport()
         }
     },
+
     generateClassReport(){
       let tableWidth=['*']
       let table=[]
@@ -184,7 +185,10 @@ export default {
                   tempText+='\n'+className.className
                   if(batchName) tempText+='\n'+batchName
                   tempText+='('+locName+')\n'+record.ttLoadType
-                  tablerow.push({text:tempText})
+                  tablerow.push({text:tempText,colSpan:record.ttDuration})
+                  for (var ii = 1; ii < record.ttDuration;ii++) {
+                      tablerow.push({text:''})
+                  }
               }
               else{
                   let loadlist=[]
@@ -204,10 +208,9 @@ export default {
                     tempText+='('+locName+')\n'+ttrecord.ttLoadType
                     loadlist.push({text:tempText})
                   })
-
-
                   let widthList=[]
                   loadlist.map(ob=>{widthList.push('*')})
+
                   tablerow.push({colSpan:record.ttDuration,table:{widths:widthList,body:[loadlist]},layout:{
                     fillColor:function(ii,nd){return '#dde'},
                     hLineWidth:function(i,nd){return 0},
@@ -218,9 +221,10 @@ export default {
               }
             }
             else {
-              tablerow.push('')
+              tablerow.push({text:''})
             }
         })
+        console.log('----',tablerow.length);
         table.push(tablerow)
       })
       const deptName=this.$store.getters['getDeptNameById'](className.fDeptId)

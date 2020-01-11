@@ -3,16 +3,26 @@ import apiObject from '@/dataserve/student_serve.js'
 const state = {
   employeeList:[],
   educationDetail:[],
-  facultyList:[]
+  facultyList:[],
+  currentEmployee:null,
+  facultyListForProxy:[]
 };
 const getters = {
     facultyNameById:(state)=>(id)=>{
       return state.facultyList.find(tt=>tt.empId==id)
+
     },
-
-
+    employeeCountByDept:(state)=>(deptId)=>{
+      return _.countBy(state.employeeList,{deptId:deptId})
+    },
     employeeEducationList:state=>{
       return state.educationDetail
+    },
+    getCurrentEmployee:(state)=>{
+      return state.currentEmployee
+    },
+    getFacultyListForProxy:(state)=>{
+      return state.facultyListForProxy
     }
 };
 const mutations = {
@@ -27,16 +37,25 @@ const mutations = {
   },
   REMOVE_EMPLOYEE:(state,id)=>{
     state.employeeList.splice(findIndex(state.employeeList,{empId:id}),1)
+  },
+  SET_CURRENT_EMPLOYEE:(state,dt)=>{
+      state.currentEmployee=dt
+  },
+  SET_FACULTYLIST_PROXY:(state,dt)=>{
+    state.facultyListForProxy=dt
   }
 };
 const actions = {
   load_employee_list:function(context){
     let url1 = '/EmpProfiles';
-    apiObject.get(url1).then(response => {
+    return new Promise(function(resolve, reject) {
+      apiObject.get(url1).then(response => {
         context.commit('SET_EMPLOYEE_LIST',response.data)
-        console.log('****',response);
-    }).catch(error => {
-        console.log('****',error);
+        resolve(response.data)
+      }).catch(error => {
+          console.log('****',error);
+          reject(error)
+      });
     });
   },
   load_employee_education_list:({commit},empId)=>{
@@ -97,13 +116,17 @@ const actions = {
          }
         const url1="/EmpProfiles/findOne?filter=" + JSON.stringify(ob)
         console.log('****',url1);
+
         return new Promise((resolve, reject)=>{
           return apiObject.get(url1)
             .then(response=>{
+              commit('SET_CURRENT_EMPLOYEE',response.data)
+              console.log('----',JSON.stringify(response.data));
               resolve(response.data)
             })
             .catch(error=>{
               console.log('****',error);
+              commit('SET_CURRENT_EMPLOYEE',null)
               reject(error)
             })
         });
@@ -179,6 +202,25 @@ const actions = {
             })
         })
     },
+    load_proxyfacultylist_by_dept:({commit},dept)=>{
+        let ob={
+          where:{
+              isTeaching:1,
+              deptId:dept
+            }
+        }
+        const url1='EmpProfiles?filter='+JSON.stringify(ob)
+
+        apiObject.get(url1)
+          .then(rr=>{
+            commit('SET_FACULTYLIST_PROXY',rr.data)
+          })
+          .catch(error=>{
+              commit('SET_FACULTYLIST_PROXY',null)
+
+              console.log('****',error);
+          })
+    },
     load_facultylist_by_dept:({commit},dept)=>{
         let ob={
           where:{
@@ -189,7 +231,6 @@ const actions = {
             ob.where.deptId=dept
         }
         const url1='/EmpProfiles?filter='+JSON.stringify(ob)
-        console.log('****',url1);
         return new Promise(function(resolve, reject) {
             apiObject.get(url1)
               .then(response=>{
@@ -202,7 +243,6 @@ const actions = {
               })
             });
     },
-
 }
 export default {
   namespaced:true,

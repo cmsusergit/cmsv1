@@ -28,20 +28,16 @@
             <b-tooltip v-if="apiRecordDB.apiEmpApproved!=1" label="Delete File">
               <button class="delete  is-small"
                   type="button"
-
-
-
-
-
-
-
-
-
                   @click="confirmRemoveFile">
               </button>
             </b-tooltip>
         </div>
-        <div v-if="apiRecordDB.apiDocPath && isAuthorizedRoleList(['CMSADMIN','HOD'])">
+
+
+
+
+
+        <div v-if="apiRecordDB.apiDocPath && isAuthorizedRoleList(['CMSADMIN','PRINCIPAL','DIRECTOR','HOD'])">
           <button v-if="apiRecordDB.apiEmpApproved!=1" @click="setApproveStatus(1)" class="button is-radiusless is-small is-success">Approved</button>
           <button v-else @click="setApproveStatus(0)" class="button is-radiusless is-small is-secondary">Reset Approval</button>
           <button v-if="apiRecordDB.apiEmpApproved!=2" @click="setApproveStatus(2)" class="button is-radiusless is-small is-danger">DisApprove</button>
@@ -61,7 +57,7 @@ import apiObject from '@/dataserve/student_serve.js'
 import config from '@/../static/test1.json'
 export default {
   name: 'SelfAppraisalPartDTableRecord',
-  props: ['apiRecord','proofIndex'],
+  props: ['apiRecord','proofIndex',],
   mixins: [userMxn],
   data() {
     return {
@@ -112,7 +108,7 @@ export default {
     },
 
     confirmRemoveFile(){
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
           title: 'Delete File',
           message: 'Are you sure you want to <b>delete</b> ? This action cannot be undone.',
           confirmText: 'Delete',
@@ -132,7 +128,7 @@ export default {
         this.apiRecordDB.apiDocPath=""
       })
       .catch(error=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -141,8 +137,11 @@ export default {
     })
   },
   documentUploaded(index){
+      const description=this.apiRecordDB.apiDescription
+      this.apiRecordDB=JSON.parse(JSON.stringify(this.apiRecord))
+      this.apiRecordDB.apiDescription=description
       if(this.file && this.file[0])
-        this.apiRecordDB.apiDocPath="D"+this.apiRecord.apiEmpMetaId+"_"+(this.apiRecord.index+1)+"_"+this.proofIndex+"."+this.file[0].name.substring(this.file[0].name.lastIndexOf(".")+1,this.file[0].name.length)
+        this.apiRecordDB.apiDocPath="D"+this.proofIndex+"_"+this.file[0].name
       else
         this.apiRecordDB.apiDocPath=''
       const url1="/apicontainers/"+this.apiRecordDB.apiEmpCode+"/upload?filename="+this.apiRecordDB.apiDocPath
@@ -155,7 +154,7 @@ export default {
       })
       .catch(error=>{
         if(error)
-        this.$toast.open({
+        this.$buefy.toast.open({
             duration: 5500,
             message: error.response.data.error.message,
             position: 'is-top',
@@ -167,7 +166,7 @@ export default {
       this.$store.dispatch('selfAppraisalStore/remove_apiemployee',this.apiRecordDB.id)
         .then(rr=>{
           this.apiRecordDB={id:0}
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: 'Succesfully Removed',
               position: 'is-top',
@@ -175,7 +174,7 @@ export default {
           })
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -187,7 +186,7 @@ export default {
       this.$store.dispatch('selfAppraisalStore/save_apiemployee',this.apiRecordDB)
         .then(rr=>{
           this.apiRecordDB=rr;
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: 'Succesfully Uploaded',
               position: 'is-top',
@@ -195,7 +194,7 @@ export default {
           })
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',

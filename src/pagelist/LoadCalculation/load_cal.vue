@@ -10,6 +10,7 @@
                 <b-select :disabled="!isAuthorizedRoleList(['CMSADMIN','HOD'])" v-model="loadCalcOb.ayId" expanded>
                     <option v-for="ay in aYearList" :value="ay.ayId">{{ay.ayBatchYear}}</option>
                 </b-select>
+
             </b-field>
               <b-field label="Department" expanded>
                   <b-select :disabled="!isAuthorizedRoleList(['CMSADMIN','HOD'])" v-model='loadCalcOb.deptId' @input="optionChanged" expanded>
@@ -35,21 +36,20 @@
               <b-field label="Select Subject" expanded>
                 <select class="is-size-5" style="width:100%" v-model="currSubject" :size="5" expanded>
                   <option v-for="(subject, index) in subjectList" :key="index" :value="subject">
-                    {{subject.subName}}
+
+                    {{subject.subName}} ({{subject.subCode}})
                   </option>
                 </select>
               </b-field>
               <b-field label="Completed Subject" expanded>
               <select disabled class="is-size-5" style="width:100%" v-if="completedSubjectList && completedSubjectList.length>0"  :size="5" expanded>
                 <option v-for="(subject, index) in completedSubjectList" :key="index" :value="subject">
-                  {{subject.subName}}
+                  {{subject.subName}} ({{subject.subCode}})
                 </option>
               </select>
             </b-field>
           </b-field>
           <LoadItemCalc v-if="currSubject" :subjectInfo='currSubject' :deptId="loadCalcOb.deptId" @addToTable='addToTableDt'></LoadItemCalc>
-          <div class="is-clearfix">
-          </div>
           <!-- <b-tabs v-model="activeTabIndx" type="is-toggle" expanded>
            <b-tab-item v-for="(subject, index) in subjectList" :key="index" :label="subject.subName">
              <LoadItemCalc :subjectInfo='subject' @addToTable='addToTableDt'></LoadItemCalc>
@@ -68,7 +68,7 @@
               <th style="width:50px">Total Subject Load</th>
               <th></th>
             </thead>
-            <tr v-for="(dt, index) in deptLoadList" :key="index">
+            <tr v-if="deptLoadList" v-for="(dt, index) in deptLoadList" :key="index">
               <td>{{index+1}}</td>
               <td>{{dt.subject.subCode}}</td>
               <td>{{dt.subject.subName}}</td>
@@ -79,7 +79,7 @@
                     dt.subject.subjectPractical*dt.nbatches+
                     dt.subject.subjectTutorial*dt.nbatches}}</td>
                     <td>
-                      <button @click="removeLoad(index)" class="button is-danger">X</button>
+                      <button @click="removeLoad(dt)" class="button is-radiusless is-small is-danger">X</button>
                     </td>
             </tr>
             <tr>
@@ -100,7 +100,7 @@
                 <th style="width:100px">Other Department</th>
                 <th></th>
               </thead>
-            <tr v-for="(dt, index) in otherDeptLoadList" :key="index">
+            <tr v-if="otherDeptLoadList" v-for="(dt, index) in otherDeptLoadList" :key="index">
               <td>{{index+1}}</td>
               <td>{{dt.subject.subCode}}</td>
               <td>{{dt.subject.subName}}</td>
@@ -110,8 +110,10 @@
               <td>{{dt.subject.subjectTheory*dt.nclasses+
                     dt.subject.subjectPractical*dt.nbatches+
                     dt.subject.subjectTutorial*dt.nbatches}}</td>
+
+
               <td>{{dt.otherDeptName}}</td>
-              <td @click="removeFromOtherList(index)" class="button is-danger">X</td>
+              <td @click="removeFromOtherList(dt)" class="button is-small is-radiusless is-danger">X</td>
             </tr>
             <tr>
               <th colspan="7">Total Load By Other Dept.(Hrs.)</th>
@@ -120,7 +122,7 @@
           </table>
           </div>
           <div style="margin-top:1em" class="is-clearfix">
-              <button class="button is-danger is-pulled-right">Delete Loadcalculation</button>
+              <button @click="remove_load_calculation" class="button is-danger is-pulled-right">Delete Loadcalculation</button>
           </div>
         </div>
       <div v-else class="is-clearfix">
@@ -179,7 +181,7 @@ export default{
           total+=dt.subject.subjectTheory*dt.nclasses+dt.subject.subjectPractical*dt.nbatches+dt.subject.subjectTutorial*dt.nbatches;
         })
         return total;
-      }
+      },
     },
     watch:{
       currAcademicyearId(){
@@ -208,35 +210,85 @@ export default{
         });
         this.load_calculation()
       },
-      removeFromOtherList(index){
-        this.otherDeptLoadList.splice(index,1)
-      },
-      removeLoad(index){
-        this.deptLoadList.splice(index,1)
-      },
-      addToTableDt(dt){
-        const ob={
-          subId:dt.subject.subId,
-          subthHrs:dt.subject.subjectTheory,
-          subprHrs:dt.subject.subjectPractical,
-          subtutHrs:dt.subject.subjectTutorial,
 
-          totClass:dt.nclasses,
-          totBatches:dt.nbatches,
-          assignDeptId:dt.otherDeptName,
-          lcId:this.loadCalculation.lcId
-        }
-        this.$store.dispatch('loadCalcStore/add_load_calc_detail',ob)
+
+      removeFromOtherList(dt){
+        this.$store.dispatch('loadCalcStore/remove_load_calc_detail',dt.loadcalcDeptId)
           .then(rr=>{
+            this.$buefy.toast.open({
+                    duration: 5500,
+                    message: "Load Calculation Detail with Id " + dt.loadcalcDeptId + " Deleted",
+                    position: 'is-top',
+                    type: 'is-success'
+                })
+                this.subjectList.push(dt.subject)
+                this.load_calculation()
+                _.remove(this.completedSubjectList,{subId:dt.subject.subId})
+          })
+          .catch(error=>{
+            this.$buefy.toast.open({
+                   duration: 5500,
+                   message: error,
+                   position: 'is-top',
+                   type: 'is-danger'
+               });
+          })
+      },
+      removeLoad(dt){
+        this.$store.dispatch('loadCalcStore/remove_load_calc_detail',dt.loadcalcDeptId)
+          .then(rr=>{
+            this.$buefy.toast.open({
+                    duration: 5500,
+                    message: "Load Calculation Detail with Id " + dt.loadcalcDeptId + " Deleted",
+                    position: 'is-top',
+                    type: 'is-success'
+                })
+                this.subjectList.push(dt.subject)
+                this.load_calculation()
+                _.remove(this.completedSubjectList,{subId:dt.subject.subId})
+          })
+          .catch(error=>{
+            this.$buefy.toast.open({
+                   duration: 5500,
+                   message: error,
+                   position: 'is-top',
+                   type: 'is-danger'
+               });
+          })
+      },
+      addToTableDt(loadCalcList){
+        let loadToDBList=[]
+        loadCalcList.map(dt=>{
+          const ob={
+            subId:dt.subject.subId,
+            subthHrs:dt.subject.subjectTheory,
+            subprHrs:dt.subject.subjectPractical,
+            subtutHrs:dt.subject.subjectTutorial,
+            totClass:dt.nclasses,
+            totBatches:dt.nbatches,
+            assignDeptId:dt.otherDeptName,
+            loadcalcDeptId:0,
+            otherDept:dt.otherDept,
+            lcId:this.loadCalculation.lcId
+          }
+          loadToDBList.push(ob)
+        })
+        this.$store.dispatch('loadCalcStore/add_load_calc_detail',loadToDBList)
+          .then(rr=>{
+
             this.currSubject=null
-            if(!dt.otherDept){
-              this.deptLoadList.push(dt)
-            }
-            else {
-                this.otherDeptLoadList.push(dt)
-            }
-            this.completedSubjectList.push(dt.subject)
-            _.remove(this.subjectList,{subId:dt.subject.subId})
+            loadCalcList.map(dt=>{
+              if(!dt.otherDept){
+                dt.loadcalcDeptId=rr.loadcalcDeptId
+                this.deptLoadList.push(dt)
+              }
+              else {
+                  this.otherDeptLoadList.push(dt)
+              }
+            })
+            console.log(`!!!!${JSON.stringify(loadCalcList)}!!!!`);
+            this.completedSubjectList.push(loadCalcList[0].subject)
+            _.remove(this.subjectList,{subId:loadCalcList[0].subject.subId})
           })
           .catch(error=>{
             console.log('****',error);
@@ -276,7 +328,8 @@ export default{
                       nclasses: ob.totClass,
                       nbatches: ob.totBatches,
                       otherDept: otherDept,
-                      otherDeptName:otherDeptName
+                      otherDeptName:otherDeptName,
+                      loadcalcDeptId:ob.loadcalcDeptId
                     }
                     if(this.loadCalcOb.deptId!=ob.assignDeptId){
                         this.otherDeptLoadList.push(temp);
@@ -291,6 +344,28 @@ export default{
                 console.log('****',error);
               })
           })
+      },
+      remove_load_calculation(){
+
+        console.log('****',JSON.stringify(this.loadCalculation));
+        this.$store.dispatch('loadCalcStore/remove_load_calculation',this.loadCalculation.lcId)
+        .then(rr=>{
+          this.$buefy.toast.open({
+                  duration: 5500,
+                  message: "Load Calculation Detail Deleted",
+                  position: 'is-top',
+                  type: 'is-success'
+              })
+              this.load_calculation()
+        })
+        .catch(error=>{
+          this.$buefy.toast.open({
+                 duration: 5500,
+                 message: error,
+                 position: 'is-top',
+                 type: 'is-danger'
+             });
+        })
       }
     },
     created(){

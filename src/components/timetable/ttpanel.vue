@@ -11,7 +11,6 @@
                     </span>
                   </b-tooltip>
 
-
                     <ul v-if="currentIndex==index" class="menu-list">
                         <li v-for="(load,indx) in loadList">
                           <a v-bind:class="[indx%2==1?'has-background-secondary':'']"  @click="slotSelected(load)" v-if="load.ttDay==dayName">
@@ -93,7 +92,7 @@
                     }
                 });
                 if (flag) {
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 5500,
                         message: "Load Record Conflit Found,StartTime or EndTime conflict on same Day",
                         position: 'is-top',
@@ -108,7 +107,7 @@
                 }
                 this.$store.dispatch('ttStore/saveTimeTblRecord', record)
                         .then(rr => {
-                            this.$toast.open({
+                            this.$buefy.toast.open({
                                 duration: 5500,
                                 message: "TimeTable Record Added",
                                 position: 'is-top',
@@ -119,7 +118,7 @@
                             this.loading = false;
                         })
                         .catch(error => {
-                            this.$toast.open({
+                            this.$buefy.toast.open({
                                 duration: 5500,
                                 message: "Error in Save TimeTable Record" + error,
                                 position: 'is-top',
@@ -132,7 +131,7 @@
                 this.loading = true;
                   console.log('++++',JSON.stringify(load));
                 this.$store.dispatch('ttStore/updateTimeTblRecord', load).then(rr => {
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                         duration: 5500,
                         message: "TimeTable Record Updated",
                         position: 'is-top',
@@ -143,7 +142,7 @@
                     this.loading = false;
                 })
                         .catch(error => {
-                            this.$toast.open({
+                            this.$buefy.toast.open({
                                 duration: 5500,
                                 message: "Error in Update TimeTable Record" + error,
                                 position: 'is-top',
@@ -155,7 +154,7 @@
             applyChange(load) {
                 const loadTemp = JSON.parse(JSON.stringify(load));
                 if (load.ttId) {
-                    this.$dialog.confirm({
+                    this.$buefy.dialog.confirm({
                         message: 'Record Exists.Want to Update?',
                         onConfirm: () => {
                             this.updateTTblRecord(loadTemp);
@@ -169,12 +168,12 @@
                 this.loadDetail = load;
             },
             deleteLoad(load) {
-                this.$dialog.confirm({
+                this.$buefy.dialog.confirm({
                     message: 'Record Exists.Want to Delete?',
                     onConfirm: () => {
                         this.loading = true;
                         this.$store.dispatch('ttStore/deleteTimeTblRecord', load).then(rr => {
-                            this.$toast.open({
+                            this.$buefy.toast.open({
                                 duration: 5500,
                                 message: "TimeTable Record Deleted",
                                 position: 'is-top',
@@ -185,7 +184,7 @@
                             this.loading = false;
                         })
                                 .catch(error => {
-                                    this.$toast.open({
+                                    this.$buefy.toast.open({
                                         duration: 5500,
                                         message: "Error in Delete TimeTable Record" + error,
                                         position: 'is-top',

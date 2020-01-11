@@ -12,23 +12,45 @@
                 <br>
 
                 <b>Academic Year:2018-19</b>
+                <br><br>
+                <p>Appraisal Approval Form</p>
             </h1>
         </div>
-        <div v-if="isAuthorizedRoleList(['CMSADMIN','HOD'])" class="is-radiusless box" style="margin-top:2em;">
-          <b-select @input="fNameChanged" placeholder="Select Faculty" expanded>
-              <option :value="faculty" v-for="faculty in facultyList">
-                {{faculty.title}} {{faculty.firstName}} {{faculty.middleName}} {{faculty.lastName}}
-              </option>
-          </b-select>
+        <div v-if="isAuthorizedRoleList(['CMSADMIN','DIRECTOR','PRINCIPAL','HOD'])" class="is-radiusless box" style="margin-top:2em;">
+          <b-field grouped>
+          <b-field label="Department" expanded>
+              <b-select :disabled="!isAuthorizedRoleList(['CMSADMIN','DIRECTOR','PRINCIPAL'])" @input="optionChanged" expanded>
+                  <option v-for="dd in departmentList" :value="dd.deptId">{{dd.deptName}}({{dd.deptAlias}})</option>
+              </b-select>
+          </b-field>
+          <b-field label="Select Faculty" expanded>
+            <b-select @input="fNameChanged" placeholder="Select Faculty" expanded>
+                <option :value="faculty" v-for="faculty in facultyList">
+                  {{faculty.title}} {{faculty.firstName}} {{faculty.middleName}} {{faculty.lastName}}
+                </option>
+            </b-select>
+            </b-field>
+        </b-field>
         </div>
         <!-- <div class="is-radiusless is-clearfix box">
           <SelfAppraisalReport :user="user"/>
         </div> -->
-        <div class="is-radiusless box">
+        <div v-if="user && user.deptId" class="box is-marginless is-radiusless is-clearfix">
+          <router-link class="button is-radiusless is-info is-pulled-right" style="width:25%" :to="{ name: 'SelfAppraisalReport', params: {facultyDetail:facultyDetail}}">
+            Go to Report
+          </router-link>
+        </div>
+        <div class="is-radiusless box is-marginless">
           <SelfAppraisalTFPartA :user='user'/>
           <SelfAppraisalTFPartB :ayId='currentAyId' :user='user'/>
           <SelfAppraisalTFPartC/>
           <SelfAppraisalTFPartD :user='user' :apiFormType='apiFormType'/>
+        </div>
+        <div v-if="user && user.deptId" class="box is-radiusless is-clearfix">
+          <router-link class="button is-radiusless is-info is-pulled-right" style="width:25%" :to="{ name: 'SelfAppraisalReport', params: {facultyDetail:facultyDetail}}">
+
+            Go to Report
+          </router-link>
         </div>
     </div>
 </template>
@@ -53,13 +75,16 @@ import {mapState,mapGetters} from 'vuex'
                 data() {
                     return {
                       user:'',
+                      facultyDetail:{},
                       apiFormType:''
                     };
                 },
                 computed:{
-                  ...mapState({
-                  }),
+                  ...mapState([
+                    'departmentList'
+                  ]),
                   currentAyId(){
+                    this.facultyDetail.ayId=2
                     return 2;
                   },
                   facultyList(){
@@ -68,7 +93,7 @@ import {mapState,mapGetters} from 'vuex'
                 },
                 watch:{
                   loggedInUser(){
-                    this.user=this.loggedInUser                    
+                    this.user=this.loggedInUser
                     if(this.user.deptId==7)
                       this.apiFormType=1
                     else if(this.user.deptId==10)
@@ -80,9 +105,20 @@ import {mapState,mapGetters} from 'vuex'
                 methods: {
                     fNameChanged(value){
                       this.user=value
-                    }
+                      this.facultyDetail.faculty=this.user
+                      this.facultyDetail.deptId=this.user.deptId
+                    },  optionChanged(dept){
+                        if(dept==7)
+                          this.apiFormType=1
+                        else if(dept==10)
+                          this.apiFormType=2
+                        else
+                          this.apiFormType=0
+                        this.$store.dispatch('employeeStore/load_facultylist_by_dept',dept)
+                      }
                 },
                 mounted() {
+                  this.$store.dispatch('load_dept_list');
                 }
               }
 </script>

@@ -105,9 +105,11 @@ export default {
   mounted()
   {
     this.$store.dispatch('load_dept_list')
+    if(this.user){
+    const ob={fEmpId:this.user.empId,fAyId:this.ayId}
+    this.$store.dispatch('selfAppraisalStore/load_teaching_record_list',ob)
+  }
   },
-
-
 
   methods: {
     addRecord(){
@@ -117,7 +119,7 @@ export default {
       this.$store.dispatch('selfAppraisalStore/save_apiteaching_perfomance',this.record)
         .then(rr=>{
             this.record={}
-            this.$toast.open({
+            this.$buefy.toast.open({
                   duration: 2500,
                   message: "Added Successfully",
                   position: 'is-top',
@@ -125,7 +127,7 @@ export default {
               });
         }).catch(error=>{
           console.log('****',error);
-          this.$toast.open({
+          this.$buefy.toast.open({
                   duration: 5500,
                   message: error.response.data.error.message,
                   position: 'is-top',

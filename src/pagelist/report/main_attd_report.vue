@@ -14,6 +14,13 @@
         <b-tab-item label="Slotwise">
           <SlotAttndReport/>
         </b-tab-item>
+        <b-tab-item label="Facultywise">
+          <FacultyAttndReport/>
+        </b-tab-item>
+
+        <b-tab-item label="Summary">
+          <SummaryAttndReport/>
+        </b-tab-item>
       </b-tabs>
     </div>
 </template>
@@ -22,7 +29,15 @@
     import { mapState} from 'vuex';
     import SlotAttndReport from "@/components/attendance/slot_attd_page"
     import StudentAttndReport from "@/components/attendance/student_attd_page"
+    import FacultyAttndReport from "@/components/attendance/faculty_attd_page"
     import SubjectAttndReport from "@/components/attendance/sub_attd_page"
+
+
+
+
+
+
+    import SummaryAttndReport from "@/components/attendance/summary_attd_page"
     export default {
         name: "AttendanceDashboard",
         data() {
@@ -36,7 +51,9 @@
         components: {
             SlotAttndReport,
             StudentAttndReport,
-            SubjectAttndReport
+            SubjectAttndReport,
+            SummaryAttndReport,
+            FacultyAttndReport
         },
         computed: {
             ...mapState([//....

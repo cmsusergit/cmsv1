@@ -10,6 +10,7 @@
         </b-select>
         <b-input v-model="searchByText" @input="$emit('searchByText',searchByText)" expanded/>
       </b-field>
+
       </b-field>
   </div>
 </template>
@@ -21,7 +22,7 @@ export default {
     return {
       searchByList:['Name','Enrollment','CollegeId','Email'],
       searchByText:'',
-      searchByOption:'Name'
+      searchByOption:'Enrollment'
     }
   },
   computed:{

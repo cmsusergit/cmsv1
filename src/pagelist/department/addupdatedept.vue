@@ -53,14 +53,14 @@ export default {
          this.$store.dispatch('deptStore/ADD_DEPT_INFO',this.deptInfo)
            .then(response=>{
                   this.$router.push({name:"Department"})
-                 this.$toast.open({
+                 this.$buefy.toast.open({
                      duration: 5500,
                      message: "Department Added Successfully",
                      position: 'is-top',
                      type: 'is-success'
                  });
            }).catch(error=>{
-             this.$toast.open({
+             this.$buefy.toast.open({
                      duration: 5500,
                      message: error.response.data.error.message,
                      position: 'is-top',
@@ -72,14 +72,14 @@ export default {
          this.$store.dispatch('deptStore/UPDATE_DEPT_INFO',this.deptInfo)
            .then(response=>{
                 this.$router.push({name:"Department"})
-                this.$toast.open({
+                this.$buefy.toast.open({
                      duration: 5500,
                      message: "Department Updated Successfully",
                      position: 'is-top',
                      type: 'is-success'
                  });
            }).catch(error=>{
-             this.$toast.open({
+             this.$buefy.toast.open({
                      duration: 5500,
                      message: error.response.data.error.message,
                      position: 'is-top',

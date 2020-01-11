@@ -57,7 +57,7 @@ import {mapState} from 'vuex'
                 },
                 methods: {
                     removeConfirmDept(id){
-                      this.$dialog.confirm({
+                      this.$buefy.dialog.confirm({
                               message: 'Do you Really want to Delete Department?',
                               onConfirm: () => {
                                 this.removeDept(id)
@@ -67,14 +67,14 @@ import {mapState} from 'vuex'
                     removeDept(id){
                       this.$store.dispatch('deptStore/REMOVE_DEPT_INFO',id)
                         .then(response=>{
-                             this.$toast.open({
+                             this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Department Deleted Successfully,Please Refresh to see Changes",
                                   position: 'is-top',
                                   type: 'is-success'
                               });
                         }).catch(error=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: error.response.data.error.message,
                                   position: 'is-top',

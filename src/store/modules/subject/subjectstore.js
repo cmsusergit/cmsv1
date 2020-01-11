@@ -2,16 +2,29 @@ import _ from 'lodash'
 import apiObject from '@/dataserve/student_serve.js'
         const state = {
             subjectList: [],
+            subjectListByClassId:[],
             subjectNameList: [],
             loading: false,
         };
 const getters = {
+  getSubjectListByClassId:state=>{
+    return state.subjectListByClassId
+  },
+
   getSubjectById:state=>id=>{
     return state.subjectList.find(tt=>tt.subId==id)
+  },
+  getSubjectList:state=>{
+
+      return state.subjectList
   }
 };
+
 const
   mutations = {
+    SET_SUBJECT_CLASSID_LIST: (state,dt) => {
+        state.subjectListByClassId = dt
+    },
     SET_SUBJECT_LIST: (state,dt) => {
         state.subjectList = dt
     },
@@ -48,7 +61,21 @@ const actions = {
                 reject(error)
               });
             }
-          );    },
+          );
+        },
+
+
+
+
+        getSubjectListByClassId({commit},ob){
+              const url1 = '/TimeTableInfos/getSubjectListByClassId/'+ob.ayId+"/"+ob.classId;
+              apiObject.get(url1).then(rr => {
+                  commit("SET_SUBJECT_CLASSID_LIST",rr.data.subjectList)
+                }).catch(error => {
+                  console.log('****',error);
+                  commit("SET_SUBJECT_CLASSID_LIST",null)
+                });
+          },
           getSubjectById({commit},id){
                   const url1 = '/SubjectInfos/'+id;
                   return new Promise((resolve,reject)=>{

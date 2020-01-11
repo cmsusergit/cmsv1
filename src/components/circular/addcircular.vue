@@ -68,7 +68,7 @@ export default {
             methodName='circularStore/update_circular'
           this.$store.dispatch(methodName,this.circularInfo)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                   duration: 5500,
                   message: "Circular Posted",
                   position: 'is-top',
@@ -77,7 +77,7 @@ export default {
             this.$parent.close()
           })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',
@@ -93,7 +93,7 @@ export default {
       this.documentUploaded()
         .then(rr=>this.saveCircular())
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',
@@ -110,7 +110,7 @@ export default {
           this.circularInfo.fileName=""
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                 duration: 5500,
                 message: error.response.data.error.message,
                 position: 'is-top',
@@ -126,7 +126,7 @@ export default {
     }
 //       addCourse(){
 //         if(this.courseInfo.courseName!==''){
-//           this.$dialog.confirm({
+//           this.$buefy.dialog.confirm({
 //                     message: 'This Will Add New Course,Really want to Continue?',
 //                     onConfirm: () => {
 //                       this.addCourse1();
@@ -144,7 +144,7 @@ export default {
 //         this.courseInfo.courseId=0;
 //         this.$store.dispatch('courseStore/add_course',this.courseInfo)
 //           .then(rr=>{
-//             this.$toast.open({
+//             this.$buefy.toast.open({
 //                     duration: 5500,
 //                     message: "Course Added Successfully",
 //                     position: 'is-top',
@@ -153,7 +153,7 @@ export default {
 //                 this.loading=false;
 //           })
 //           .catch(error=>{
-//             this.$toast.open({
+//             this.$buefy.toast.open({
 //                     duration: 5500,
 //                     message: "Error in Adding Course\n"+error.response.data.error.message,
 //                     position: 'is-top',
@@ -166,14 +166,14 @@ export default {
 //         this.loading=true;
 //         this.$store.dispatch('courseStore/update_course',this.courseInfo)
 //           .then(rr=>{
-//             this.$toast.open({
+//             this.$buefy.toast.open({
 //                     duration: 5500,message: "Course Updated Successfully",
 //                     position: 'is-top',type: 'is-success'
 //                 });
 //                 this.loading=false;
 //           })
 //           .catch(error=>{
-//             this.$toast.open({
+//             this.$buefy.toast.open({
 //                     duration: 5500,message: "Error in Adding Course\n"+error.response.data.error.message,
 //                     position: 'is-top',type: 'is-danger'
 //                 });

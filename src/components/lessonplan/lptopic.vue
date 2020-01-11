@@ -93,7 +93,7 @@ export default {
           this.topicList.push({topicId:0,topic:'',tAid:'',tMethod:'',coId:0})
         }
         else {
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: "Please Add Unit Before Add Topic",
               position: 'is-top',
@@ -111,7 +111,7 @@ export default {
         //           this.topicList.push({})
         //         })
         //         .catch(error=>{
-        //           this.$toast.open({
+        //           this.$buefy.toast.open({
         //                       duration: 5500,
         //                       message: error.response.data.error.message,
         //                       position: 'is-top',
@@ -124,7 +124,7 @@ export default {
     editTopic(topic,indx){
       this.$store.dispatch('lessonPlanStore/update_lp_topic',topic)
         .then(rr=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: 'Topic Updated',
               position: 'is-top',
@@ -132,7 +132,7 @@ export default {
             })
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -147,7 +147,7 @@ export default {
           this.lpUnit.topicList=JSON.parse(JSON.stringify(this.topicList))
 
           this.lpUnit.topicList.splice(this.lpUnit.topicList.length-1)
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: 'Topic Removed',
               position: 'is-top',
@@ -156,7 +156,7 @@ export default {
             })
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -180,7 +180,7 @@ export default {
         //     this.topicList.push({topicId:0,topic:'',tAid:'',tMethod:'',coId:0})
         //   })
         //   .catch(error=>{
-        //       this.$toast.open({
+        //       this.$buefy.toast.open({
         //       duration: 5500,
         //       message: error.response.data.error.message,
         //       position: 'is-top',

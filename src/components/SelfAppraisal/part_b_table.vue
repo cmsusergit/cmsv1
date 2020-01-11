@@ -82,7 +82,7 @@ mounted()
     removeRecord(id){
       this.$store.dispatch('selfAppraisalStore/remove_teaching_record',id)
         .then(rr=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                 duration: 2500,
                 message: "Removed Successfully",
                 position: 'is-top',
@@ -90,7 +90,7 @@ mounted()
             });
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                   duration: 5500,
                   message: error.response.data.error.message,
                   position: 'is-top',

@@ -11,7 +11,6 @@
     <div class="is-pulled-right">
      <button type="submit" style="margin-right:.5em" class="button is-radiusless is-info">Save</button>
 
-
      <button @click="isNewTodo=false" type="button" class="button is-radiusless is-info ">Close</button>
    </div>
      <div class="is-clearfix"></div>
@@ -83,7 +82,7 @@ export default {
             this.isNewTodo=false
           })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',

@@ -28,44 +28,44 @@
                 "duration":1
            },
            {
-              "name":"THEORY 12:15-01:15",
-              "startTime":"12:15",
-                  "endTime":"01:15",
+              "name":"THEORY 12:25-01:25",
+              "startTime":"12:25",
+                  "endTime":"01:25",
                 "duration":1
            },
            {
-              "name":"THEORY 01:15-02:15",
-              "startTime":"01:15",
-                  "endTime":"02:15",
+              "name":"THEORY 01:25-02:25",
+              "startTime":"01:25",
+                "endTime":"02:25",
                 "duration":1
            },
            {
-              "name":"THEORY 02:30-03:30",
-              "startTime":"02:30",
-                  "endTime":"03:30",
+              "name":"THEORY 02:40-03:35",
+              "startTime":"02:40",
+                  "endTime":"03:35",
                 "duration":1
            },
            {
-              "name":"THEORY 03:30-04:30",
-              "startTime":"03:30",
+              "name":"THEORY 03:35-04:30",
+              "startTime":"03:35",
                   "endTime":"04:30",
                 "duration":1
            },
            {
               "name":"PRACT 09:45-11:45",
-              "startTime":"09:45",
-                  "endTime":"11:45",
+                "startTime":"09:45",
+                "endTime":"11:45",
                 "duration":2
            },
            {
-              "name":"PRACT 12:15-02:15",
-              "startTime":"12:15",
-                  "endTime":"02:15",
+              "name":"PRACT 12:25-02:25",
+              "startTime":"12:25",
+                  "endTime":"02:25",
                 "duration":2
            },
            {
-              "name":"PRACT 02:30-04:30",
-              "startTime":"02:30",
+              "name":"PRACT 02:40-04:30",
+              "startTime":"02:40",
                   "endTime":"04:30",
                 "duration":2
            }
@@ -83,10 +83,10 @@
     "slot_list":[
             {"startTime":"09:45","endTime":"10:45"},
             {"startTime":"10:45","endTime":"11:45"},
-            {"startTime":"12:15","endTime":"01:15"},
-            {"startTime":"01:15","endTime":"02:15"},
-            {"startTime":"02:30","endTime":"03:30"},
-            {"startTime":"03:30","endTime":"04:30"}
+            {"startTime":"12:25","endTime":"01:25"},
+            {"startTime":"01:25","endTime":"02:25"},
+            {"startTime":"02:40","endTime":"03:35"},
+            {"startTime":"03:35","endTime":"04:30"}
     ]
   }
 }

@@ -23,11 +23,12 @@
         </div>
         <ListBy @classChanged="classChanged"  @batchChanged="batchChanged" @currSemChanged="currSemChanged" @courseChanged="courseChanged" @deptChanged="deptChanged"></ListBy>
         <SearchBy :studentList="studentList" @searchOptionChanged='searchOptionChanged' @searchByText="searchByText" />
+
         <div style="overflow:auto;width:100%;">
             <b-table class=""
                      :data="!searching?studentList:searchStudentList"
                      :paginated=true
-                     :per-page=20
+                     :per-page=100
                      :loading='loading'
                      default-sort-direction="asc"
                      default-sort="stuId"
@@ -36,8 +37,7 @@
                      :checkable="isBatchEdit"
                      >
                 <template slot-scope="props">
-
-                    <b-table-column label="Sr." width="40" numeric>
+                  <b-table-column label="Sr." width="40" numeric>
                         {{ props.index+1 }}
                     </b-table-column>
                     <b-table-column field="stuEnroll" label="Enrollment" sortable>
@@ -72,7 +72,7 @@
                             <button v-if="isAuthorizedRoleList(['CMSADMIN','STUDENT_COORD','HOD'])" @click="updateStudent(props.row.stuId)"  class="button is-dark is-small ">
                                 <b-icon pack="fas" icon="edit"></b-icon>
                             </button>
-                            <button v-if="isAuthorizedRoleList(['CMSADMIN','STUDENT_COORD','HOD'])" @click="confirmCustomDelete(props.row.stuId)"  class="button is-small is-danger">
+                            <button v-if="isAuthorizedRoleList(['CMSADMIN','STUDENT_COORD','HOD'])" @click="confirmCustomDelete(props.row.stuId,props.row.stuPhoto)"  class="button is-small is-danger">
                                 <b-icon pack="fas" icon="trash"></b-icon>
                             </button>
                             </button>
@@ -121,7 +121,7 @@
                 searchStudentList: [],
                 searching: false,
                 searchText:'',
-                searchOption:'Name',
+                searchOption:'Enrollment',
                 selectedStudentList:[],
                 isBatchEdit:false
             };
@@ -173,10 +173,12 @@
                 this.selectedStudentList=[]
                 this.$store.dispatch('studentStore/load_student_list', this.listBy)
             },
-            removeStudent(id) {
+
+            removeStudent(id,path) {
               this.$store.dispatch('studentStore/remove_student_info',id)
                 .then(rr=>{
-                  this.$toast.open({
+                  this.$store.dispatch('studentStore/remove_student_photo',path)
+                  this.$buefy.toast.open({
                         duration: 5500,
                         message: "Student with Id " + id + " Removed",
                         position: 'is-top',
@@ -184,7 +186,7 @@
                   })
                 })
                 .catch(error=>{
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -195,15 +197,15 @@
             updateStudent(id) {
                 this.$router.push({name: 'AddUpdateStudent', params: {id: id}})
             },
-            confirmCustomDelete(id) {
-                this.$dialog.confirm({
+            confirmCustomDelete(id,path) {
+                this.$buefy.dialog.confirm({
                     title: 'Deleting account',
                     message: 'Are you sure you want to <b>delete</b> ? This action cannot be undone.',
                     confirmText: 'Delete',
                     type: 'is-danger',
                     hasIcon: true,
                     onConfirm: () => {
-                        this.removeStudent(id)
+                        this.removeStudent(id,path)
                       }
                 })
             },
@@ -211,7 +213,8 @@
                 this.$router.push({name: 'StudentDetail', params: {id: id}})
             },
             importExcel() {
-                console.log('****', this.excelFile[0].name);
+
+                console.log('****', this.excelFile.name);
                 this.uploadExcelFile()
             },
             uploadExcelFile() {
@@ -219,7 +222,7 @@
                 const url1 = config.db_configuration.baseURL + "/containers/test1/upload"
                 let fd = new FormData()
                 fd.append('type','studentlist')
-                fd.append('excel', this.excelFile[0])
+                fd.append('excel', this.excelFile)
                 axios.post(url1, fd).then(response => {
                     console.log('****', response);
                     this.$store.dispatch('studentStore/load_student_list', this.listBy)
@@ -253,7 +256,6 @@
                             tt+=temp.stuCollegeId
                          else if(this.searchOption=='Email')
                             tt+=temp.stuEmail
-                        console.log(tt);
                         return tt.toLowerCase().includes(this.searchText)
                     })
                 }

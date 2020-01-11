@@ -1,7 +1,7 @@
 <template>
   <div class="section is-radiusless box" style="width:100%">
 
-    <h1 class="title is-size-4">Prepare Lessonplan</h1>{{lessonPlan}}
+    <h1 class="title is-size-4">Prepare Lessonplan</h1>
     <p hidden>{{loggedInUser}}</p>
     <div class="is-radiusless box">
         <b-field grouped>
@@ -19,7 +19,7 @@
         </b-field>
         <b-field grouped>
           <b-field label="Faculty Name" expanded>
-              <b-select :disabled="!isAuthorizedRoleList(['CMSADMIN'])" v-model="lpRecord.facultyId" expanded>
+              <b-select @input="optionChanged" :disabled="!isAuthorizedRoleList(['CMSADMIN'])" v-model="lpRecord.facultyId" expanded>
                   <option :value="faculty.empId" v-for="faculty in facultyList">
                     {{faculty.title}} {{faculty.firstName}} {{faculty.middleName}} {{faculty.lastName}}
                   </option>
@@ -54,7 +54,7 @@
       </b-select>
     </b-field>
       <b-field label='Reference Books'>
-          <b-input @blur="onRefBlur" v-model="lpRecord.refBook" type='textarea'/>
+          <b-input @blur="onRefBlur" maxlength="500" v-model="lpRecord.refBook" type='textarea'/>
       </b-field>
       <!--
       <b-field label='Course Objectives'>
@@ -107,10 +107,10 @@
     </div>
   </div>
 </template>
-
 <script>
 import LPUnit from '@/components/lessonplan/lpunit'
 import LPTopic from '@/components/lessonplan/lptopic'
+
 import userMxn from '@/mixin/user'
 import {mapState} from 'vuex'
 import config from "@/../static/test1.json";
@@ -119,7 +119,9 @@ export default {
   components: {
     LPUnit,
     LPTopic
-  },mixins: [userMxn],
+  },
+  mixins: [userMxn],
+  props: ['selectedLP'],
   data(){
     return {
       isIncludeContent:false,
@@ -165,6 +167,9 @@ export default {
       if(this.facultyDeptId){
           this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.facultyDeptId)
       }
+      if(this.selectedLP){
+        this.lpRecord=JSON.parse(JSON.stringify(this.selectedLP))
+      }
       if(this.lpRecord.deptId){
           this.$store.dispatch('load_class_list_by_dept', this.lpRecord.deptId);
           const ob={
@@ -188,15 +193,6 @@ export default {
           let scheduleList=[]
           response.map(record=>{
             if(record.timetableRecordInfo){
-
-
-
-
-
-
-
-
-
               scheduleList.push({date:record.csDateConducted,presentCount:record.attndanceInfos.length,content:record.csContentCovered})
             }
           })
@@ -358,8 +354,9 @@ export default {
       this.selectedUnit=unit
     },
     loadLessonPlan(){
-      if(!this.lpRecord.courseId || !this.lpRecord.subId ||!this.lpRecord.semId || !this.lpRecord.classId)
-        return;
+      if(!this.lpRecord.facultyId||!this.lpRecord.courseId || !this.lpRecord.subId ||!this.lpRecord.semId || !this.lpRecord.classId){
+			return;
+		}
       const ob={
         facultyId: this.lpRecord.facultyId,
         deptId: this.lpRecord.deptId,
@@ -379,7 +376,7 @@ export default {
       })
       .catch(error=>{
         this.lessonPlan=null
-        this.$toast.open({
+        this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -426,13 +423,12 @@ export default {
       }
       this.$store.dispatch("subjectStore/load_subject_for_ttable",ob)
       this.loadLessonPlan()
-
     },
     addLessonPlan() {
       this.lpRecord.lpId=0
       this.$store.dispatch('lessonPlanStore/add_lessonplan',this.lpRecord)
         .then(rr=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: "LessonPlan Added",
               position: 'is-top',
@@ -441,7 +437,7 @@ export default {
           this.loadLessonPlan()
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',
@@ -453,7 +449,7 @@ export default {
         unit.lpId=this.lessonPlan.lpId
         this.$store.dispatch('lessonPlanStore/add_lessonplan_unit',unit)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
 
                         message: "Unit Added",
@@ -463,7 +459,7 @@ export default {
               this.lpUnitList.push(response)
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: error.response.data.error.message,
                         position: 'is-top',
@@ -474,7 +470,7 @@ export default {
     editUnit(unit){
         this.$store.dispatch('lessonPlanStore/edit_lessonplan_unit',unit)
           .then(response=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: "Unit Updated",
                         position: 'is-top',
@@ -488,7 +484,7 @@ export default {
               this.$set(this.lpUnitList,index,response)
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                         duration: 5500,
                         message: error.response.data.error.message,
                         position: 'is-top',
@@ -500,7 +496,7 @@ export default {
       this.$store.dispatch('lessonPlanStore/remove_lessonplan_unit',this.lpUnitList[indx].unitId)
         .then(rr=>{
           this.lpUnitList.splice(indx,1)
-          this.$toast.open({
+          this.$buefy.toast.open({
                     duration: 5500,
                     message: "Unit Removed",
                     position: 'is-top',
@@ -508,7 +504,7 @@ export default {
           })
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -520,16 +516,7 @@ export default {
         if(!this.lessonPlan || !this.lpRecord)
           return
 
-
-
-
-
-
-
-
-
-
-        if(this.lessonPlan.refBook!=this.lpRecord.refBook)this.$dialog.confirm({
+        if(this.lessonPlan.refBook!=this.lpRecord.refBook)this.$buefy.dialog.confirm({
               title: 'Content Changed',
               message: 'Content Of References Have been Changed,Do you Want to Apply Changes?',
               confirmText: 'Update',
@@ -544,7 +531,7 @@ export default {
 
                 this.$store.dispatch('lessonPlanStore/updateReference',temp)
                   .then(rr=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration:5500,
                       message:"Updated Reference",
                       position:"is-top",

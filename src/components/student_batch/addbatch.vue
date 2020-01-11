@@ -47,7 +47,7 @@ export default {
   methods:{
       addBatch(){
         if(this.studentBatchInfo.batchName!==''){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'This Will Add New Batch,Really want to Continue?',
                     onConfirm: () => {
                       this.addBatch1();
@@ -63,7 +63,7 @@ addBatch1(){
         this.studentBatchInfo.batchId=0;
         this.$store.dispatch('classStore/add_batch',this.studentBatchInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Batch Added Successfully",
                     position: 'is-top',
@@ -72,7 +72,7 @@ addBatch1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Error in Adding Batch\n"+error.response.data.error.message,
                     position: 'is-top',
@@ -85,7 +85,7 @@ addBatch1(){
         this.loading=true;
         this.$store.dispatch('classStore/update_batch',this.studentBatchInfo)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Batch Updated Successfully",
                     position: 'is-top',
@@ -94,7 +94,7 @@ addBatch1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Error in Updating Batch\n"+error.response.data.error.message,
                     position: 'is-top',type: 'is-danger'
                 });

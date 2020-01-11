@@ -72,12 +72,12 @@ export default{
         return dn
       },
         removeClass(id){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'Do you Really want to Delete class?',
                     onConfirm: () => {
                         this.$store.dispatch('classStore/remove_class',id)
                         .then(rr=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Class Removed Successfully",
                                   position: 'is-top',
@@ -86,7 +86,7 @@ export default{
                               this.loading=false;
                         })
                         .catch(error=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Error in Removing Class\n"+error.response.data.error.message,
                                   position: 'is-top',

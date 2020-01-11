@@ -1,16 +1,18 @@
 <template>
     <div class="is-radiusless box tile is-vertical" style="width:100%;height:100%;">
-
+<!--
       <div class="is-fullwidth is-clearfix">
           <button @click="exportToPDF" style="margin-bottom:1em;" class="button is-radiusless is-info is-pulled-right">Export to PDF</button>
-      </div>
+      </div> -->
         <div id='emp_profile' v-if="employeeInfo" class="tile is-radiusless box" style="height:100%">
-          <figure class="image is-128x128" style="margin-right:1em;padding:.4em;border:1px solid lightgray;">
-            <img v-if="image" :src="image" alt="Image !Found">
+          <figure class="image is-128x128" style="margin-right:1em;">
+            <img v-if="image" :src="image" alt="Image !Found" style="border:1px solid">
           </figure>
+
+
+
           <div class="tile">
             <table class="table is-bordered is-fullwidth" style="font-size:1em">
-
               <tr>
                 <td colspan="8" class="has-background-grey has-text-white subtitle has-text-weight-bold">
                   Personal Detail
@@ -70,7 +72,7 @@
                 <td colspan="4">
                   <b>Joining Date:</b> {{new Date(employeeInfo.doj).toLocaleDateString()}}</td>
               </tr>
-              <!-- <tr>
+              <tr>
                 <td colspan="8" class="has-background-grey has-text-white subtitle has-text-weight-bold">Office Detail</td>
               </tr>
               <tr>
@@ -88,7 +90,7 @@
                 <td colspan="4">
                   UAN: {{employeeInfo.uanNumber}}
                 </td>
-              </tr> -->
+              </tr>
             </table>
           </div>
         </div>
@@ -109,11 +111,12 @@ import html2pdf from 'html2pdf.js'
                 image:null
             }
         },
+
+
         methods: {
           exportToPDF(){
             const element = document.getElementById('emp_profile');
             var option = {
-
               filename:'employee_profile.pdf',
               image:{ type: 'jpeg', quality: 1 },
               html2canvas:{ scale:2,useCORS:true },
@@ -144,7 +147,7 @@ import html2pdf from 'html2pdf.js'
           this.$store.dispatch('employeeStore/get_employee_by_id',this.$route.params.id)
             .then(rr=>{
                 this.employeeInfo=rr.data
-                this.image=config.db_configuration.baseURL+'/containers/test1/download/'+this.employeeInfo.empCode+'.png'
+                this.image=config.db_configuration.baseURL+'/containers/employee_photo/download/'+this.employeeInfo.empPhoto
                 this.getDesignationById(rr.data.designationId)
                 this.getDeptNameById(rr.data.deptId)
             })

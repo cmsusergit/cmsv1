@@ -2,15 +2,19 @@ import apiObject from '@/dataserve/student_serve.js'
 import {findIndex} from 'lodash'
 
 const state = {
+  deptResultSummaryList:[],
+  deptSummaryList:[],
   teachingRecordList:[]
 };
 const getters = {
   getTeachingRecordList:state=>{
     return state.teachingRecordList
-  }
+  },
+
+  deptResultSummaryList:state=>{return state.deptResultSummaryList},
+  deptSummaryList:state=>{return state.deptSummaryList}
 };
 const mutations = {
-
     ADD_TEACHING_RECORD_LIST(state,dt){
       state.teachingRecordList.push(dt)
     },
@@ -21,6 +25,12 @@ const mutations = {
     },
     SET_TEACHING_RECORD_LIST(state,dt){
       state.teachingRecordList=dt
+    },
+    SET_DEPTRESULTSUMMARYLIST(state,dt){
+      state.deptResultSummaryList=dt
+    },
+    SET_DEPTSUMMARYLIST(state,dt){
+      state.deptSummaryList=dt
     }
 };
 const actions = {
@@ -28,15 +38,6 @@ load_param_list:({commit},ob)=>{
   return new Promise(function(resolve, reject) {
     const temp={where:{apiMetaSection:ob.sectionId,apiMetaType:ob.apiMetaType,apiMetaAyid:ob.ayId}}
     const url1 = '/ApiMeta?filter='+JSON.stringify(temp);
-
-
-
-
-
-
-
-
-
     console.log(`!!!!${url1}!!!!`);
      apiObject.get(url1).then(response=>{
       resolve(response.data)
@@ -73,6 +74,18 @@ remove_apiemployee:({commit},id)=>{
     const url1='/ApiEmployees/'+id
     apiObject.delete(url1).then(rr=>{resolve(rr.data)}).catch(error=>{reject(error)})
   });
+},
+loadProofFileList:({commit},empCode)=>{
+    const url1='/apicontainers/'+empCode+'/files'
+    return new Promise(function(resolve, reject) {
+      apiObject.get(url1).then(rr=>{
+        resolve(rr.data)
+      })
+      .catch(error=>{
+        console.log('****',error)
+        reject(error)
+      })
+    });
 },
 save_apiemployee:({commit},ob)=>{
   return new Promise(function(resolve, reject) {
@@ -170,13 +183,6 @@ getReportByHODForEmployee:({commit},ob)=>{
         })
     });
 },
-
-
-
-
-
-
-
 getReportByPrincipalForEmployee:({commit},ob)=>{
     const url1="/ApiObservationPrincipals/getReportByPrincipalForEmployee/"+ob.ayId+"/"+ob.empId
     return new Promise((resolve, reject)=>{
@@ -221,9 +227,34 @@ remove_teaching_record:({commit},id)=>{
     apiObject.delete(url1).then(rr=>{
       commit('REMOVE_TEACHING_RECORD',id)
       resolve(rr.data)
+
     }).catch(error=>{reject(error)})
   });
 },
+loadDeptSummaryList:({commit},deptId)=>{
+  const url1='/ApiEmployees/getDeptSummary/'+deptId
+  apiObject.get(url1)
+    .then(rr=>{
+      commit('SET_DEPTSUMMARYLIST',rr.data.scoreList)
+    })
+    .catch(error=>{
+      commit('SET_DEPTSUMMARYLIST',null)
+    })
+},
+loadDeptResultSummaryList:({commit},deptId)=>{
+  const url1='/EmpProfiles/getDeptSummary/'+deptId
+  apiObject.get(url1)
+    .then(rr=>{
+
+
+
+
+      commit('SET_DEPTRESULTSUMMARYLIST',rr.data.scoreList)
+    })
+    .catch(error=>{
+      commit('SET_DEPTRESULTSUMMARYLIST',null)
+    })
+}
 }
 export default {
   namespaced:true,

@@ -16,29 +16,19 @@
                 </b-field>
               </b-field>
                 <b-field grouped>
-                  <b-field label="Sem">
-                     <b-select @input="changeSubjectList" v-model="dt.ttSem" >
-                          <option :key="indx" v-for="indx in 10">{{ indx }}</option>
-                      </b-select>
-                  </b-field>
-                  <b-field label="Course" expanded>
-                      <b-select @input="changeSubjectList" v-model="dt.fCourseId" expanded>
-                          <option v-for="course in courseList" :value="course.courseId">{{course.courseAlias}}</option>
-                      </b-select>
-                  </b-field>
-                  <b-field  label="Subject Name" expanded>
-                          <b-select v-model="dt.fSubjectId" expanded>
-                            <option v-for="(subject, index) in subjectList" :key="index" :value="subject.subId">
-                              {{subject.subName}}
-                            </option>
-                          </b-select>
-                  </b-field>
                   <b-field  label="Class Name" expanded>
-                    <b-select @input="classChanged"  v-model="dt.classId" expanded>
+                    <b-select :disabled="!dt.fDeptId" @input="classChanged"  v-model="dt.classId" expanded>
                       <option v-for="(cl, index) in classList" :key="index" :value="cl.classId">
                         {{cl.className}}
                       </option>
                     </b-select>
+                </b-field>
+                <b-field  label="Subject Name" expanded>
+                  <b-select :disabled="!dt.classId" v-model="dt.fSubjectId" expanded>
+                    <option v-for="(subject, index) in subjectList" :key="index" :value="subject.subId">
+                      {{subject.subName}}
+                    </option>
+                  </b-select>
                 </b-field>
         </b-field>
         <b-field grouped>
@@ -46,7 +36,6 @@
             <b-radio @input="radioChanged" v-model="dt.loadType" name="LoadType" style="width:20%;" native-value="Theory">Theory</b-radio>
             <b-radio @input="radioChanged" v-model="dt.loadType" name="LoadType" style="width:20%;" native-value="Practical">Practical</b-radio>
             <b-radio @input="radioChanged" v-model="dt.loadType" name="LoadType" style="width:20%;" native-value="Tutorial">Tutorial</b-radio>
-
             <b-radio @input="radioChanged" v-model="dt.loadType" name="LoadType" style="width:20%;" native-value="Other">Other</b-radio>
           </div>
         </b-field>
@@ -95,7 +84,7 @@
               return this.$store.state.acadyearStore.acadyearList
             },
             subjectList() {
-                return this.$store.state.subjectStore.subjectList;
+                return this.$store.getters['subjectStore/getSubjectListByClassId'];
             },
             batchList(){
               return this.$store.state.classStore.batchList
@@ -108,11 +97,9 @@
           currAcademicyearId(){
             this.dt.ayId=this.currAcademicyearId
           },
-
-
-
           loggedInUser(){
               this.dt.fDeptId=this.loggedInUser.deptId
+
               this.$store.dispatch('load_class_list_by_dept', this.dt.fDeptId)
           }
         },
@@ -123,6 +110,7 @@
             this.dt.ayId=this.currAcademicyearId
             this.dt.fDeptId=this.loggedInUser.deptId
             this.$store.dispatch('load_class_list_by_dept', this.dt.fDeptId);
+
         },
         methods: {
           radioChanged(value){
@@ -133,22 +121,22 @@
           },
           deptChanged(){
             this.$store.dispatch('load_class_list_by_dept', this.dt.fDeptId)
-            this.changeSubjectList()
+            this.dt.classId=""
           },
           classChanged(vv){
-            this.$store.dispatch('classStore/load_batch_list_by_classid',vv)
-          },
-          changeSubjectList(){
             const ob={
-              dept:this.dt.fDeptId,
-              course:this.dt.fCourseId,
-              sem:this.dt.ttSem
+              ayId:this.dt.ayId,
+              classId:vv
             }
-
-            this.$store.dispatch("subjectStore/load_subject_for_ttable",ob)
-          }
+            this.$store.dispatch('classStore/load_batch_list_by_classid',vv)
+            this.$store.dispatch('subjectStore/getSubjectListByClassId',ob)
+          },
         }
 };
 </script>
+
+
+
+
 <style>
 </style>

@@ -3,13 +3,13 @@
 
     <h1 v-if="apiFormType==0" class="is-size-4 has-text-centered">Annual Appraisal Report of Technical Faculty for A.Y.</h1>
     <h1 v-else-if="apiFormType==1" class="is-size-4 has-text-centered">Annual Appraisal Report of Non-Technical Faculty for A.Y.</h1>
-
     <h1 v-else-if="apiFormType==1" class="is-size-4 has-text-centered">Annual Appraisal Report of MCA Faculty for A.Y.</h1>
     <div>
       <p class="is-size-5 has-text-weight-bold has-text-centered">DETAILS OF POINTS SCORED BY FACULTY IN DIFFERENT ASPECTS OF APPRAISAL</p>
       <div style="margin-top:2em;font-size:80%;">
         <SelfAppraisalTFPartA :user='user'/>
       </div>
+
 
       <table class="table is-bordered is-fullwidth is-size-7">
         <thead>
@@ -110,6 +110,7 @@
           </td>
         </tr>
       </table>
+
       <div v-if="isAuthorizedRoleList(['CMSADMIN','PRINCIPAL'])" class="is-radiusless is-clearfix box">
         <button :disabled="submissionCompletedPrincipal" type="submit" class="button is-info is-radiusless is-pulled-right" style="margin-left:1em;width:20%;">Submit</button>
         <button type="button" :disabled="!submissionCompletedPrincipal" @click="generateReport" style="margin-left:1em;width:20%;" class="button is-info is-radiusless is-pulled-right">Generate Report</button>
@@ -121,9 +122,8 @@
 import SelfAppraisalTFPartA from '@/components/SelfAppraisal/part_a'
 import userMxn from '@/mixin/user'
 import {mapGetters} from 'vuex'
-
-
-
+import image2base64 from 'image-to-base64'
+import config from '@/../static/test1.json'
 export default {
   name: 'SelfAppraisalReport',
   props: ['currAyId',
@@ -154,6 +154,7 @@ export default {
           {partName:"D-3:EXTRA-CURRICULAR ACTIVITIES",partMinScore:40,actualScore:0},
           {partName:"D-4:ACTIVITIES OF PROFESSIONAL DEVELOPMENTAL",partMinScore:80,actualScore:0}
         ],
+        empPhoto:'',
       selectedUser:{},
       paramList:[],
       paramListPrincipal:[],
@@ -202,6 +203,16 @@ export default {
       this.getReportByPrincipalForEmployee()
       const ob={fEmpId:this.user.empId,fAyId:this.ayId}
       this.$store.dispatch('selfAppraisalStore/load_teaching_record_list',ob)
+      const imageUrl=config.db_configuration.baseURL+'/containers/employee_photo/download/'+this.user.empPhoto
+      image2base64(imageUrl)
+        .then(rr=>{
+          this.empPhoto="data:image/jpeg;base64,"+rr
+        })
+        .catch(error=>{
+          console.log('****',error);
+
+
+        })
     },
     teachingRecordList(){
       let partList=[]
@@ -215,8 +226,6 @@ export default {
               partList[0].actualScore+=20
         })
         if (partList[0].actualScore>60) {
-
-
           partList[0].actualScore=60
         }
       }
@@ -249,7 +258,7 @@ export default {
         let principalObservation=[]
         this.paramListPrincipal.map((ob,indx)=>{
           if(indx==this.paramListPrincipal.length-1){
-              principalObservation.push([{text:ob.apiParamDesc,fontSize:20,fillColor:'#eeeeff',bold:true},{text:ob.observation?'Yes':'No',fontSize:20,fillColor:'#eeeeff',bold:true}])
+              principalObservation.push([{text:ob.apiParamDesc,fillColor:'#eeeeff',bold:true},{text:ob.observation?'Yes':'No',fillColor:'#eeeeff',bold:true}])
           }
           else
           principalObservation.push([{text:ob.apiParamDesc},{text:ob.observation}])
@@ -261,7 +270,9 @@ export default {
             table:{
                 widths:['auto','auto','*',110],
                 body:[
-                    ['1','Name',this.selectedUser.fullname,{rowSpan:4,alignment:'center',text:'Photo'}],
+                    ['1','Name',this.selectedUser.fullname,
+                      {rowSpan:4,alignment:'center',image:this.empPhoto,fit:[100,100]}
+                    ],
                     ['2','Designation',this.selectedUser.designation,''],
                     ['3','Department',this.selectedUser.deptName,''],
                     ['4','Date of Joining',this.selectedUser.dojoining.toLocaleDateString(),'']
@@ -296,7 +307,16 @@ export default {
                 body:principalObservation
               }
             },
-            {margin:[0,40,0,5],fontSize:14,alignment:'right',text:'Signature'}
+            {margin:[0,20,0,20],alignment:'right',text:"Principal's Signature"},
+            {
+
+
+              table:{
+                  widths:['*','*'],
+                  body:[[{border:[false,false,false,false],text:"Increment To Be Released(Y/N):__________",alignment:'left',fontSize:11},
+                  {border:[false,false,false,false],alignment:'right',text:"Signature",fontSize:11}
+                ]]}
+            }
         ]
         var pdfMake = require('pdfmake/build/pdfmake.js')
           if (pdfMake.vfs == undefined){
@@ -376,6 +396,8 @@ export default {
           })
       },
       getTotalScoreForEmployee(indx){
+
+        if(!this.user)return
         let partList=[]
         if(this.apiFormType==0)partList=this.partListTF
         else if (this.apiFormType==1) partList=this.partListNTF
@@ -409,7 +431,7 @@ export default {
         this.$store.dispatch("selfAppraisalStore/submitReportHOD",list)
           .then(r1=>{
             this.submissionCompleted=true
-            this.$toast.open({
+            this.$buefy.toast.open({
               duration: 5500,
               message: "Submitted",
               position: 'is-top',
@@ -417,7 +439,7 @@ export default {
           })
       })
       .catch(error=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
           duration: 5500,
           message: "Error in Submit Report",
           position: 'is-top',
@@ -442,7 +464,7 @@ export default {
     this.$store.dispatch("selfAppraisalStore/submitReportPrincipal",list)
       .then(r1=>{
         this.submissionCompletedPrincipal=true
-        this.$toast.open({
+        this.$buefy.toast.open({
           duration: 5500,
           message: "Submitted",
           position: 'is-top',
@@ -450,7 +472,7 @@ export default {
       })
     })
     .catch(error=>{
-    this.$toast.open({
+    this.$buefy.toast.open({
       duration: 5500,
       message: "Error in Submit Report",
       position: 'is-top',

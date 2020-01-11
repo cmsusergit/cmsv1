@@ -40,7 +40,7 @@
                 this.$store.dispatch('loginStore/login',this.user)
                   .then(rr=>{
                       this.loading=false
-                      this.$toast.open({
+                      this.$buefy.toast.open({
                         duration: 2200,
                         message: `Successfully LoggedIn`,
                         position: 'is-top',
@@ -51,7 +51,7 @@
                     })
                     .catch(error=>{
                       this.loading=false
-                      this.$toast.open({
+                      this.$buefy.toast.open({
                         duration: 2200,
                         message: `Login:${error}`,
                         position: 'is-top',
@@ -66,7 +66,7 @@
                 this.loading=true
                 this.$store.dispatch('loginStore/signUp',this.user)
                   .then(rr=>{
-                      this.$toast.open({
+                      this.$buefy.toast.open({
                         duration: 2200,
                         message: `Successfully SignUp`,
                         position: 'is-top',
@@ -75,7 +75,7 @@
                       this.loading=false
                     })
                     .catch(error=>{
-                      this.$toast.open({
+                      this.$buefy.toast.open({
                         duration: 2200,
                         message: `SignUp:${error}`,
                         position: 'is-top',

@@ -1,4 +1,149 @@
 <template>
+  <div class="is-radiusless box" style="height:100%;">
+
+    <p class="title">Lessonplan Report</p>
+    <div class="is-radiusless box">
+      <b-field grouped>
+      <b-field label="Academic Year" expanded>
+          <b-select @input="ayearChanged" v-model="lpOb.ayId" expanded>
+              <option v-for="ay in aYearList" :value="ay.ayId">{{ay.ayBatchYear}}</option>
+          </b-select>
+      </b-field>
+
+
+      <b-field label="Faculty Department" expanded>
+          <b-select :disabled="!isAuthorizedRoleList(['CMSADMIN'])" @input="loadFacultyList" v-model="lpOb.deptId" expanded>
+              <option v-for="dd in departmentList" :value="dd.deptId">{{dd.deptName}}({{dd.deptAlias}})</option>
+          </b-select>
+      </b-field>
+    </b-field>
+    <b-field label="Faculty Name" expanded>
+        <b-select @input="load_lessonplan_list" :disabled="!isAuthorizedRoleList(['CMSADMIN'])" v-model="facultyId" expanded>
+            <option :value="faculty.empId" v-for="faculty in facultyList">
+              {{faculty.title}} {{faculty.firstName}} {{faculty.middleName}} {{faculty.lastName}}
+            </option>
+        </b-select>
+    </b-field>
+    <b-table v-if="lessonPlanList" :data='lessonPlanList' bordered>
+      <template slot-scope='props'>
+        <b-table-column label="Sr." width="40" numeric centered>
+              {{ props.index+1 }}
+        </b-table-column>
+        <b-table-column label="Department" field="deptId" sortable centered>
+          {{getDeptName(props.row.deptId)}}
+        </b-table-column>
+        <b-table-column label="Course" field="courseId" sortable centered>
+          {{getCourseName(props.row.courseId)}}
+        </b-table-column>
+        <b-table-column label="Subject" centered>
+          {{getSubject(props.row.subId)}}
+        </b-table-column>
+        <b-table-column label="Sem." field="semId" sortable centered>
+          {{props.row.semId}}
+        </b-table-column>
+        <b-table-column label="Class Name" centered>
+          {{getClassName(props.row.classId)}}
+        </b-table-column>
+        <b-table-column label="" centered>
+          <router-link :to="{ name: 'LessonPlan', params: {selectedLP:props.row}}">Goto</router-link>
+
+<!--
+          <button @click="gotoLessonplan(props.row)" class="button is-radiusless is-info is-small" >Goto Lessonplan</button> -->
+        </b-table-column>
+      </template>
+    </b-table>
+  </div>
+  </div>
+</template>
+<script>
+import {mapState} from 'vuex'
+import userMxn from '@/mixin/user'
+export default {
+  name: "LpReport",
+  mixins: [userMxn],
+  data(){
+    return {
+        lpOb:{
+          ayId:1,deptId:1
+        },
+        facultyId:-1
+    }
+  },
+  computed:{
+    ...mapState([
+      'departmentList',
+      'classList',
+      'courseList'
+    ]),//....
+    aYearList() {
+        return this.$store.state.acadyearStore.acadyearList
+    },
+    facultyList(){
+        return this.$store.state.employeeStore.facultyList
+    },
+    lessonPlanList(){
+      return this.$store.getters['lessonPlanStore/getLessonPlanList']
+    },
+    lessonPlanList(){
+      return this.$store.getters['lessonPlanStore/getLessonPlanList']
+    },
+    getDeptName(){
+      return id=>this.departmentList.find(ob=>id==ob.deptId).deptAlias
+    },
+    getCourseName(){
+      return id=>this.courseList.find(ob=>id==ob.courseId).courseAlias
+    },
+    subjectList(){
+      return this.$store.state.subjectStore.subjectList
+    },
+    getSubject(){
+      return id=>{
+        const temp=this.subjectList.find(ob=>id==ob.subId)
+        return `${temp.subName}(${temp.subAlias})`
+      }
+    },
+    getClassName(){
+      return id=>this.classList.find(ob=>id==ob.classId).className
+    }
+  },
+  mounted() {
+      this.$store.dispatch('acadyearStore/load_academicyear_list')
+      this.$store.dispatch('load_dept_list')
+      this.$store.dispatch('load_course_list')
+      this.$store.dispatch('subjectStore/LOAD_SUBJECT_LIST')
+      this.$store.dispatch('load_class_list')
+  },
+
+  watch:{
+    currAcademicyearId(){
+      this.lpOb.ayId=this.currAcademicyearId
+    },
+    facultyList(){
+      if(this.loggedInUser)
+        this.facultyId=this.loggedInUser.empId
+    },
+    loggedInUser(){
+      this.lpOb.deptId=this.loggedInUser.deptId
+      this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.loggedInUser.deptId)
+    }
+  },
+  methods: {
+    ayearChanged(){
+      if(this.facultyId) this.load_lessonplan_list()
+    },
+    loadFacultyList() {
+      this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.lpOb.deptId)
+    },
+    load_lessonplan_list(){
+      const ob={ayId:this.lpOb.ayId,facultyId:this.facultyId}
+      this.$store.dispatch('lessonPlanStore/load_lessonplan_list',ob)
+    }
+  }
+}
+</script>
+<style scoped>
+</style>
+<!-- <template>
   <div class="section is-radiusless box" style="width:100%">
 
     <p hidden>{{loggedInUser}}</p>
@@ -137,11 +282,6 @@
   </div>
 </template>
 <script>
-
-
-
-
-
 import {mapState} from 'vuex'
 import userMxn from '@/mixin/user'
 import config from "@/../static/test1.json";
@@ -259,6 +399,5 @@ export default {
   }
 }
 </script>
-
 <style lang="css" scoped>
-</style>
+</style> -->

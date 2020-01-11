@@ -179,23 +179,26 @@
                     return;
                 this.dt.ttStartTime = this.selectedSlotName.startTime;
                 this.dt.ttEndTime = this.selectedSlotName.endTime;
-                if (this.selectedSlotName.duration == 2) {
+                if (this.selectedSlotName.duration >= 2) {
                     this.dt.ttLoadType = "Practical"
-                    this.loadTypeList = ["Practical"]
+                    this.dt.ttDuration=this.selectedSlotName.duration
+                    //
+                    // this.loadTypeList = ["Practical"]
                 } else {
                     this.dt.ttLoadType = "Theory"
-                    this.dt.ttDuration = 1;
-                    this.loadTypeList = ["Theory", "Tutorial", "Other", "Free"]
+                    this.dt.ttDuration = this.selectedSlotName.duration
+                    this.loadTypeList = ["Theory", "Tutorial", "Other", "Free","Practical"]
                 }
             },
             loadTypeChanged() {
                 this.dt.studentBatchName = this.batchList[0];
                 if (this.dt.ttLoadType == "Practical") {
-                    this.dt.ttDuration = 2;
+                    //
+                    // this.dt.ttDuration = this.selectedSlotName.duration;
                 } else if (this.dt.ttLoadType == "Theory")
                     this.dt.studentBatchName = "-";
-                else
-                    this.dt.ttDuration = 1;
+                else{}
+                    // this.dt.ttDuration = 1;
             },
             confirmChange() {
                 this.$emit("applyChange", this.dt)

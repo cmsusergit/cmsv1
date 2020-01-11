@@ -87,16 +87,36 @@ export default {
   },
   watch:{
     user(){
+
+
+
+
+
+
+
+
+
+
       this.selectedUser.fullname=this.user.title +" "+this.user.firstName +" "+this.user.middleName +" "+this.user.lastName
       this.getDesignationById(this.user.designationId)
       this.getDeptNameById(this.user.deptId)
       this.selectedUser.dojoining=new Date(this.user.doj)
-
       this.$store.dispatch('employeeStore/load_employee_education_list',this.user.empId)
   }
   },
   mounted()
-  {},
+  {
+
+
+
+
+
+    this.selectedUser.fullname=this.user.title +" "+this.user.firstName +" "+this.user.middleName +" "+this.user.lastName
+    this.getDesignationById(this.user.designationId)
+    this.getDeptNameById(this.user.deptId)
+    this.selectedUser.dojoining=new Date(this.user.doj)
+    this.$store.dispatch('employeeStore/load_employee_education_list',this.user.empId)
+  },
   methods: {
     getDesignationById(id){
       this.$store.dispatch('designationStore/getDesignationById',id)

@@ -5,18 +5,27 @@
     <Header></Header>
   </div>
   <div v-if="loggedIn">
-    <div class="app-container">
+    <div class="app-container" style="overflow:auto;width:100%;">
 
-      <div v-if="!isGuest && issidebar" class="app-sidebar">
-        <Sidebar ></Sidebar>
-      </div>
+
+
+
+
+      <transition name="slide">
+        <div ref="sidebar" v-if="!isGuest && issidebar" class="app-sidebar"
+        :style="fixedPosition">
+          <Sidebar ></Sidebar>
+        </div>
+      </transition>
       <div class="app-dashboard">
+        <transition name="fade">
         <router-view />
+      </transition>
       </div>
     </div>
     <button @click="openSideBar"
-      :style="{left:leftPosition+'em' }"
-      class="button sidebar-button is-info"
+      :style="{width:buttonWidth}"
+      class="button is-radiusless sidebar-button is-info" style="position:fixed;bottom:0;"
       >
     {{menuText}}
   </button>
@@ -48,9 +57,12 @@ export default {
   },
   data(){
     return {
+      fixedPosition:{},
       menuText: "<",
       issidebar: true,
-      leftPosition: 14
+      buttonWidth: '14em',
+      scrollY:0,
+      originalTop:0
     }
   },
   computed:{
@@ -60,16 +72,29 @@ export default {
     },
     isGuest(){ return this.$store.getters['loginStore/isGuest']}
   },
-    methods: {
+  mounted() {
+
+    // this.originalTop=Math.round(this.$el.getBoundingClientRect().top);
+    // const ttop=Math.round(this.$refs['sidebar'].getBoundingClientRect().top);
+    // window.addEventListener('scroll',event=>{
+    //   this.scrollY=Math.round(window.pageYOffset)
+    //   //
+    //   // const t1=this.scrollY +ttop
+    //   if(t1 >0){
+    //     this.fixedPosition=`position:absolute;top:${this.originalTop}px`
+    //   }
+    // })
+  },
+  methods: {
       openSideBar() {
       if (!this.issidebar) {
         this.issidebar = true;
         this.menuText = "<";
-        this.leftPosition = 14;
+        this.buttonWidth = '14em';
       } else {
-        this.menuText = ">";
         this.issidebar=false
-        this.leftPosition=0
+         this.menuText = ">";
+        this.buttonWidth='2em'
       }
     }
   }
@@ -83,6 +108,9 @@ body {
   margin: 0px;
   min-height: 100vh;
 }
+
+
+
 #app {
   display: flex;
   flex-direction: column;
@@ -90,14 +118,14 @@ body {
 .sidebar-button {
   position:fixed;
   left:0;
-  top:50%;
-  width:20px;
-  height: 80px;
+  bottom:.1em;
+  width:14em;
+  height: 2em;
   opacity: 0.7;
 }
 .sidebar-button:hover{
-  opacity:1;
-   height:80px;
+   opacity:1;
+   height:2em;
 }
 .app-container {
   background-color: rgb(170, 180, 180);
@@ -131,7 +159,6 @@ body {
   word-wrap: wrap;
   flex: 0 0 14em;
 }
-
 .app-sidebar p,
 .app-sidebar a {
   font-size: 100%;
@@ -139,13 +166,25 @@ body {
 }
 @media (max-width: 750px) {
   .sidebar-button{
-
     display: none;
   }
   .app-container {
     flex-direction: column;
     flex: 1;
   }
+}
+.slide-enter-active, .slide-leave-active{
+  transition: all .4s;
+}
+.slide-enter, .slide-leave-to{
+    transform: scaleY(0);
+    flex: 0em;
+}
+.fade-enter-active,.fade-leave-active{
+  transition: all .2s
+}
+.fade-enter,.fade-leave-to{
+  transform: scaleX(0.5);
 }
 /*
 #app {

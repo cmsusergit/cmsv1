@@ -40,7 +40,7 @@ export default {
   methods:{
       addClass(){
         if(this.studentClassInfos.className!==''){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'This Will Add New Class,Really want to Continue?',
                     onConfirm: () => {
                       this.addClass1();
@@ -57,7 +57,7 @@ addClass1(){
         this.studentClassInfos.classId=0;
         this.$store.dispatch('classStore/add_class',this.studentClassInfos)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Class Added Successfully",
                     position: 'is-top',
@@ -66,7 +66,7 @@ addClass1(){
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,
                     message: "Error in Adding Class\n"+error.response.data.error.message,
                     position: 'is-top',
@@ -79,14 +79,14 @@ addClass1(){
         this.loading=true;
         this.$store.dispatch('classStore/update_class',this.studentClassInfos)
           .then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Class Updated Successfully",
                     position: 'is-top',type: 'is-success'
                 });
                 this.loading=false;
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                     duration: 5500,message: "Error in Updating Class\n"+error.response.data.error.message,
                     position: 'is-top',type: 'is-danger'
                 });

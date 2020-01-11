@@ -12,7 +12,7 @@
 
 
             <b-field label="Department" expanded>
-                <b-select :disabled="!isAuthorizedRoleList(['CMSADMIN','DIRECTOR','PRINCIPAL'])" @input="optionChanged" expanded>
+                <b-select v-model="deptId" :disabled="!isAuthorizedRoleList(['CMSADMIN','DIRECTOR','PRINCIPAL'])" @input="optionChanged" expanded>
                     <option v-for="dd in departmentList" :value="dd.deptId">{{dd.deptName}}({{dd.deptAlias}})</option>
                 </b-select>
             </b-field>
@@ -44,8 +44,10 @@ import {mapState,mapGetters} from 'vuex'
                 components: {
                   SelfAppraisalReport
                 },
+                props: ['facultyDetail'],
                 data() {
                     return {
+                      deptId:1,
                       currAyearId:2,
                       apiFormType:'',
                       user:''
@@ -78,11 +80,22 @@ import {mapState,mapGetters} from 'vuex'
                       this.user=value
                     },
                     optionChanged(dept){
+                      if(dept==7)
+                        this.apiFormType=1
+                      else if(dept==10)
+                        this.apiFormType=2
+                      else
+                        this.apiFormType=0
                       this.$store.dispatch('employeeStore/load_facultylist_by_dept',dept)
                     }
                 },
                 mounted() {
-                  this.$store.dispatch('load_dept_list');
+                  this.$store.dispatch('load_dept_list')
+                  if(this.facultyDetail){
+                    this.currAyId=this.facultyDetail.ayId
+                    this.deptId=this.facultyDetail.deptId
+                    this.user=this.facultyDetail.faculty
+                  }
                 }
               }
 </script>

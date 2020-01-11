@@ -41,7 +41,6 @@
     </div>
   </template>
 <script>
-
     import config from "@/../static/test1.json";
     import userMxn from '@/mixin/user'
     import { mapState} from 'vuex';
@@ -121,7 +120,7 @@
                 })
             },
             deleteProxy(id) {
-                this.$dialog.confirm({
+                this.$buefy.dialog.confirm({
                     title: 'Delete ProxyDetail',
                     message: 'Are you sure you want to <b>delete</b>?<br/>This action cannot be undone.',
                     confirmText: 'Delete',
@@ -135,7 +134,7 @@
             deleteProxyConfirmed(id){
               this.$store.dispatch('proxyStore/delete_proxy_detail',id)
                 .then(rr=>{
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 5500,
                     message: 'ProxyDetail Removed',
                     position: 'is-top',
@@ -144,7 +143,7 @@
                   this.$store.dispatch('proxyStore/load_proxy_list',this.facultyId)
                 })
                 .catch(error=>{
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',

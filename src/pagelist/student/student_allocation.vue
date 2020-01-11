@@ -82,6 +82,7 @@
                   if(!list1)
                     return
                   list1.map(ob=>{
+                    if(ob && ob.studentInfo)
                     mergedList.push(ob.studentInfo)
                   })
                   mergedList=_.uniqBy(mergedList,'stuEnroll')
@@ -120,7 +121,7 @@
                   batchId:this.listBy.batch
                 }}
                 this.$store.dispatch('studentStore/load_allocated_student_list', ob)
-                this.$toast.open({
+                this.$buefy.toast.open({
                   duration: 2500,
                   message:'Student Allocated' ,
                   position: 'is-top',
@@ -128,7 +129,7 @@
                 })
               })
               .catch(error=>{
-                this.$toast.open({
+                this.$buefy.toast.open({
                   duration: 5500,
                   message: "Either Duplicate Entry OR "+error.response.data.error.message,
                   position: 'is-top',
@@ -155,7 +156,7 @@
                     batchId:this.listBy.batch
                   }}
                   this.$store.dispatch('studentStore/load_allocated_student_list', ob)
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 2500,
                     message:'Student Deallocated',
                     position: 'is-top',
@@ -163,7 +164,7 @@
                   })
                 })
                 .catch(error=>{
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -173,7 +174,7 @@
             },
             verifyBeforeAllocationList(){
               if(this.selectedStudentList.length==0){
-                this.$toast.open({
+                this.$buefy.toast.open({
                   duration: 5500,
                   message: "Select Students Before Allocation",
                   position: 'is-top',
@@ -182,7 +183,7 @@
                 return false
               }
               if(!this.listBy.class || !this.listBy.batch){
-                this.$toast.open({
+                this.$buefy.toast.open({
                   duration: 5500,
                   message: "ClassName or BatchName Require Selection",
                   position: 'is-top',
@@ -194,7 +195,7 @@
             },
             verifyBeforeDeallocationList(){
                 if(this.selectedAllocatedList.length==0){
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     duration: 5500,
                     message: "Select Students Before DeAllocation",
                     position: 'is-top',
@@ -202,7 +203,7 @@
                   })
                   }
                   if(!this.listBy.class || !this.listBy.batch){
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration: 5500,
                       message: "ClassName or BatchName Require Selection",
                       position: 'is-top',

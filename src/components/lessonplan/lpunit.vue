@@ -91,7 +91,7 @@ export default {
   methods: {
     addUnit(unit){
       if(unit && unit.unitId!==0){
-        this.$dialog.confirm({
+        this.$buefy.dialog.confirm({
                   message: 'This Will Add New Unit,Really want to Continue?',
                   onConfirm: () => {
                     this.$emit('addUnit',unit)
@@ -109,11 +109,12 @@ export default {
           this.$store.dispatch('lessonPlanStore/add_lp_topic',ob)
           this.topicList.push({})
         }
+
+
         else {
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: "Please Add Unit Before Add Topic",
-
               position: 'is-top',
               type: 'is-danger'
             })
@@ -129,7 +130,7 @@ export default {
         //           this.topicList.push({})
         //         })
         //         .catch(error=>{
-        //           this.$toast.open({
+        //           this.$buefy.toast.open({
         //                       duration: 5500,
         //                       message: error.response.data.error.message,
         //                       position: 'is-top',
@@ -139,13 +140,12 @@ export default {
         // }
     },
     removeTopic(topic,indx){
-
       this.$store.dispatch('lessonPlanStore/remove_lp_topic',topic.topicId)
         .then(rr=>{
           this.topicList.splice(indx,1)
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -162,7 +162,7 @@ export default {
             this.topicList.push({topicId:0,topic:'',tAid:'',tMethod:'',coId:0})
           })
           .catch(error=>{
-              this.$toast.open({
+              this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',

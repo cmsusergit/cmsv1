@@ -11,7 +11,6 @@
                   <b-icon icon="file-import"></b-icon>
                   <span>Import</span>
 
-
               </a>
           </b-upload>
         <button @click="exportToFile" class="button is-info">Export</button>
@@ -126,7 +125,7 @@ export default{
           removeEmployee(id) {
             this.$store.dispatch('employeeStore/remove_employee_personal',id)
               .then(rr=>{
-                this.$toast.open({
+                this.$buefy.toast.open({
                       duration: 5500,
                       message: "Employee with Id " + id + " Removed",
                       position: 'is-top',
@@ -134,7 +133,7 @@ export default{
                 })
               })
               .catch(error=>{
-                this.$toast.open({
+                this.$buefy.toast.open({
                   duration: 5500,
                   message: error.response.data.error.message,
                   position: 'is-top',
@@ -143,7 +142,7 @@ export default{
               })
           },
           confirmCustomDelete(id){
-            this.$dialog.confirm({
+            this.$buefy.dialog.confirm({
                 title: 'Deleting account',
                 message: 'Are you sure you want to <b>delete</b> your Employee With ID ' + id + '? This action cannot be undone.',
                 confirmText: 'Delete Employee',
@@ -198,7 +197,6 @@ export default{
                     list1.push(temp)
                 })
               }
-
               const wsheet=XLSX.utils.json_to_sheet(list1)
               const wb=XLSX.utils.book_new()
               XLSX.utils.book_append_sheet(wb,wsheet,"employee_list")
@@ -208,12 +206,11 @@ export default{
           searchOptionChanged(option){
               this.searchOption=option;
            },
-
-
            searchByText(text){
              this.searchText=text
              this.searchBy()
            },
+
            searchBy(){
                if (this.searchText == '') {
                    this.searching = false;

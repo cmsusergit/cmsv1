@@ -10,14 +10,16 @@ const state = {
     timeTblDayList: config.dt_list.rowh,
     timeTblSlotList: config.dt_list.slot_list,
     timeTblDt: new TTModel(),
-    
+
     classTimeTblDt: new TTModel(),
     locationTimeTblDt: new TTModel(),
-    timeTblId: null
+    timeTblId: null,
+    subjectListByFaculty:null
 };
 
 const  getters = {
     busyFacultyList:state=>{return state.busyFacultyList},
+    subjectListByFaculty:state=>{return state.subjectListByFaculty},
     timeTblDt:state=>{
       return state.timeTblDt
     },
@@ -45,7 +47,7 @@ const  getters = {
         }
       }
       return timeTblList;
-    }, 
+    },
     getLocationTtblMatrix:state=>{
       let timeTblList=new Array(state.timeTblDayList.length)
       for (let ii = 0; ii < timeTblList.length; ii++) {
@@ -86,10 +88,10 @@ const  getters = {
             for (let ii = 0;ii<timeTblList.length;ii++) {
               for (let indx = 0; indx < timeTblList[ii].length; indx++) {
                    let count=0;
-                _.forEach(state.classTimeTblDt.timeTableList,(ttRecord,indx1)=>{              
+                _.forEach(state.classTimeTblDt.timeTableList,(ttRecord,indx1)=>{
                   const tt=ttRecord.ttStartTime.substring(0,ttRecord.ttStartTime.lastIndexOf(":"));
                   if((timeTblList[ii][indx].ttDay==ttRecord.ttDay)&&(timeTblList[ii][indx].ttStartTime==tt)){
-                      count=count+1            
+                      count=count+1
                       if(count==1){
                           timeTblList[ii].splice(indx, ttRecord.ttDuration, ttRecord)
                           timeTblList[ii][indx].ttStartTime=tt;
@@ -101,13 +103,14 @@ const  getters = {
                           timeTblList[ii][indx].loadList.push(_.pick(temp1,['ttId','fClassId','ttLoadType','ttSem','fFacultyId','fLocationId','fBatchId','fSubjectId']))
                           timeTblList[ii][indx].loadList.push(_.pick(ttRecord,['ttId','fClassId','ttLoadType','ttSem','fFacultyId','fLocationId','fBatchId','fSubjectId']))
                       }
-                     else{                   
+                     else{
                          timeTblList[ii][indx].loadList.push(_.pick(ttRecord,['ttId','fClassId','ttLoadType','ttSem','fFacultyId','fLocationId','fBatchId','fSubjectId']))
                      }
                       console.log(`!!!!${count}----${JSON.stringify(timeTblList[ii][indx])}!!!!`)
                   }
-                }); 
+                });
               }
+
             }
             return timeTblList;
     }
@@ -117,7 +120,7 @@ const  getters = {
 const  mutations = {
     LOAD_BUSY_FACULTY_LIST(state,dt){state.busyFacultyList=dt},
     LOAD_TT_RECORDLIST(state, dt) {
-        state.timeTblDt.timeTableList = dt; 
+        state.timeTblDt.timeTableList = dt;
     },
     SAVE_TIMETBLDT(state, dt) {
         state.timeTblDt = dt;
@@ -148,6 +151,9 @@ const  mutations = {
             }
         }
     },
+    SET_FACULTYLISTBYFACULTY(state,dt){
+      state.subjectListByFaculty=dt.subjectList
+    },
     SAVE_TT_RECORD(state, dt) {
         state.timeTblDt.timeTableList.push(dt);
     },
@@ -155,8 +161,6 @@ const  mutations = {
         state.timeTblId = id;
     }
 };
-
-
 const  actions = {
   loadBusyFacultyList({commit,dispatch},dt){
     const temp={loadDetail:dt}
@@ -198,10 +202,10 @@ const  actions = {
                     });
         });
     },
-    saveTimeTblRecord(context, record) {  
+    saveTimeTblRecord(context, record) {
         const url1 = "/TimetableRecordInfos/";
         record.load.ttId = 0;
-        record.load.fTimetableId = record.timeTblId;    
+        record.load.fTimetableId = record.timeTblId;
         console.log("----", record.load);
         return new Promise((resolve, reject) => {
             apiObject.post(url1, record.load)
@@ -298,7 +302,7 @@ const  actions = {
         const url1 = "/TimeTableInfos/getTTRecordListByLocation/" + dt.locationId +"/"+dt.ayid;
         return new Promise((resolve, reject) => {
             apiObject.get(url1)
-                    .then(rr => {                        
+                    .then(rr => {
                       let unionList=[]
                       if(rr.data.ttRecordList.length>0){
                           rr.data.ttRecordList.map(ob=>{
@@ -310,7 +314,7 @@ const  actions = {
                     })
                     .catch(error => {
                         context.commit("LOAD_LOCATION_TT_RECORDLIST", null);
-                        return reject(error);  
+                        return reject(error);
                     });
         });
     },
@@ -326,7 +330,7 @@ const  actions = {
 //        ob.where.and.push({or:[{fBatchId:dt.batchId},{fBatchId:'-'}]})
 //      }
 //      const url1="/timetableRecordInfos?filter="+JSON.stringify(ob)
-        
+
         const url1 = "/TimeTableInfos/getTTRecordListByClassID/"+dt.classId+"/"+dt.ayId+"/"+dt.batchId ;
         console.log(url1);
         return new Promise((resolve, reject) => {
@@ -360,6 +364,21 @@ const  actions = {
                         return reject(error);
                     });
       })
+    },
+
+
+
+
+
+    loadSubjectListByFaculty({commit},detail){
+      const url1="/TimeTableInfos/getSubjectListForFaculty"
+      apiObject.post(url1,{detail:detail})
+        .then(rr=>{
+          commit('SET_FACULTYLISTBYFACULTY',rr.data)
+        })
+        .catch(error=>{
+          commit('SET_FACULTYLISTBYFACULTY',null)
+        })
     }
 };
 export default {
@@ -416,7 +435,7 @@ export default {
 ////      .then(rr=>{
 ////        tt.timeTblDt.academicYear=rr
 ////      })
-////      .catch(ee=>{ 
+////      .catch(ee=>{
 ////          console.log(ee);
 ////        });
 ////       _.forEach(tt.timeTblDt.timeTableList,temp=>{

@@ -9,8 +9,10 @@ import config from '@/../static/test1.json'
 import {store } from './store/store.js'
 import 'buefy/dist/buefy.css'
 import userMxn from '@/mixin/user'
-Vue.config.productionTip = false
+import Chart from 'vue2-frappe'
 
+Vue.config.productionTip = false
+Vue.use(Chart)
 Vue.use(Buefy,
 { defaultIconPack: 'fas'})
 /**/

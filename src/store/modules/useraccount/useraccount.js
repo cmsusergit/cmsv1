@@ -24,9 +24,9 @@ const
 };
 const actions = {
   unassign_role_user({commit},dt){
-    const url1="/UserAccounts/"+dt.userId+"/userroles/rel/"+dt.roleId
+    const url1="/Userrolemappings/deleteRoleMapping"
     return new Promise(function(resolve, reject) {
-      apiObject.delete(url1)
+      apiObject.post(url1,{ob:dt})
         .then(rr=>{
           resolve(rr.data)
         })

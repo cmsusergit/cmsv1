@@ -99,7 +99,7 @@ export default {
           this.topicList.push({})
         }
         else {
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: "Please Add Unit Before Add Topic",
               position: 'is-top',
@@ -117,7 +117,7 @@ export default {
         //           this.topicList.push({})
         //         })
         //         .catch(error=>{
-        //           this.$toast.open({
+        //           this.$buefy.toast.open({
         //                       duration: 5500,
         //                       message: error.response.data.error.message,
         //                       position: 'is-top',
@@ -133,7 +133,7 @@ export default {
           this.topicList.splice(indx,1)
         })
         .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -150,7 +150,7 @@ export default {
             this.topicList.push({topicId:0,topic:'',tAid:'',tMethod:'',coId:0})
           })
           .catch(error=>{
-              this.$toast.open({
+              this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',

@@ -86,7 +86,7 @@ export default {
         }
     })
     .then(response=>{
-      this.$toast.open({
+      this.$buefy.toast.open({
                     duration: 5500,
                     message: "Employee Created",
                     position: 'is-top',
@@ -97,7 +97,7 @@ export default {
       .catch(error=>{
 
 
-        this.$toast.open({
+        this.$buefy.toast.open({
                     duration: 5500,
                     message: error.response.data.error.message,
                     position: 'is-top',
@@ -125,7 +125,7 @@ export default {
         return this.$store.dispatch("employeeStore/update_empeducation_for_employee",ob)
       })
       .then(rr=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
                     duration: 5500,
                     message: "Employee Updated",
                     position: 'is-top',
@@ -134,7 +134,7 @@ export default {
         this.$router.push({name:'EmployeePersonalProfile'})
       })
       .catch(error=>{
-          this.$toast.open({
+          this.$buefy.toast.open({
             duration: 5500,
             message: error.response.data.error.message,
             position: 'is-top',
@@ -163,7 +163,7 @@ export default {
         }
       })
       .catch(error=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
           duration: 5500,
           message: error.response.data.error.message,
           position: 'is-top',

@@ -232,7 +232,7 @@ export default {
         this.$store.dispatch("selfAppraisalStore/submitReportHOD",list)
           .then(r1=>{
             this.submissionCompleted=true
-            this.$toast.open({
+            this.$buefy.toast.open({
               duration: 5500,
               message: "Submitted",
               position: 'is-top',
@@ -240,7 +240,7 @@ export default {
           })
       })
       .catch(error=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
           duration: 5500,
           message: "Error in Submit Report",
           position: 'is-top',

@@ -86,7 +86,6 @@ import facultyMxn from '@/mixin/faculty'
         mixins: [facultyMxn],
         data() {
             return {
-              deptName:'',
               totalAssignedToLoad:0,
               totalAssignedByLoad:0
             }
@@ -96,6 +95,12 @@ import facultyMxn from '@/mixin/faculty'
             'classList',
             'batchList',
             'departmentList']),
+
+
+            deptName(){
+              if(this.departmentList && this.faculty)
+                return this.departmentList.find(tt=>tt.deptId==this.faculty.deptId).deptAlias
+            },
           proxyReportAssignedByList(){
             const proxyReportDt=this.$store.getters['proxyStore/proxyReportAssignedByList']
             if(!proxyReportDt){
@@ -157,16 +162,20 @@ import facultyMxn from '@/mixin/faculty'
                 this.$store.dispatch('proxyStore/load_proxyreport_assignedto_list',{detail:ob})
             },
           faculty(){
+
+
+
+
+
+              console.log('faculty');
               if(!this.ayId)
                 return
-              this.deptName=this.departmentList.find(tt=>tt.deptId==this.faculty.deptId).deptAlias
               const ob={ayId:this.ayId,facultyId:this.faculty.empId}
               this.$store.dispatch('proxyStore/load_proxyreport_assignedby_list',{detail:ob})
               this.$store.dispatch('proxyStore/load_proxyreport_assignedto_list',{detail:ob})
           }
         },
         mounted() {
-          this.deptName=this.departmentList.find(tt=>tt.deptId==this.faculty.deptId).deptAlias
           const ob={ayId:this.ayId,facultyId:this.faculty.empId}
           this.$store.dispatch('subjectStore/load_subject_by_dept',-1)
           this.$store.dispatch('load_dept_list')

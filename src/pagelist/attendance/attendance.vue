@@ -77,15 +77,12 @@
                 </b-table-column>
             </template>
         </b-table>
-        <p v-if="!this.scheduleDate" style="width:100%" class="tag is-radiusless is-large is-danger">
-
-          <a href="#todt">
-            <span class="has-text-white">Please Select Date To Continue</span>
-          </a>
+        <p v-if="!scheduleDate" style="width:100%" class="tag is-radiusless is-large is-danger">
+            <span @click="scrollToTop" class="has-text-white" style="cursor:pointer">Please Select Date To Continue</span>
           </p>
          <button v-else @click="activeTab=1" class="button is-primary" style="width:100%">Next</button>
       </b-tab-item>
-      <b-tab-item :disabled="!this.scheduleDate" label="Present List">
+      <b-tab-item :disabled="!scheduleDate" label="Present List">
         <div class="is-size-5 has-text-white has-background-info has-text-weight-bold is-radiusless box">Total Present Students Count: {{presentList.length}}</div>
         <table class="table is-bordered is-fullwidth">
           <thead>
@@ -164,18 +161,13 @@ export default {
         }
         this.$store.dispatch('attendanceStore/classScheduleExist',ob)
           .then(rr=>{
-
-
-
-
-
             console.log(`!!!!${rr.recordExist}!!!!`);
             if(rr.recordExist){
                 this.recordExistsMessage="Record Already Exist"
             }
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -217,7 +209,7 @@ export default {
       }
       this.$store.dispatch('attendanceStore/save_attendance',dt).
           then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                   duration: 5500,
                   message: "Attendance Submitted",
                   position: 'is-top',
@@ -228,7 +220,7 @@ export default {
             this.$router.push({name:'AttendanceDashboard'})
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -306,6 +298,10 @@ export default {
       if(!faculty)return;
       const temp='('+faculty.firstName.charAt(0)+faculty.middleName.charAt(0)+faculty.lastName.charAt(0)+')'
       return faculty.firstName+" "+faculty.middleName+" "+faculty.lastName+" "+temp
+    },
+    scrollToTop(){
+
+      window.scrollTo({top:0,left:0,behavior:'smooth'})
     }
   },
   mounted() {

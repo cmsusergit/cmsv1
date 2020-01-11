@@ -5,12 +5,16 @@ const state = {
   designationList:[]
 };
 const getters = {
+  designationById:(state)=>(id)=>{
+    return state.designationList.find(tt=>tt.desgId==id)
+  },
 };
+
+
 const mutations = {
 SET_DESIGNATION_LIST:(state,dt)=>{
   state.designationList=dt;
 },
-
 UPDATE_DESIGNATION:(state,dt)=>{
   // const temp=_.find(state.designationList,ob=>{
   //   return ob.locId==dt.locId;

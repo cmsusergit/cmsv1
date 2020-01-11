@@ -97,7 +97,7 @@
                 this.$store.dispatch('ttStore/saveTimeTable', this.timeTblDt).then(response => {
                     if (response.data){
                         this.timeTblId = response.data.timetableId;
-                        this.$toast.open({
+                        this.$buefy.toast.open({
                                 duration: 5500,
                                 message: "TimeTable Added Successfully",
                                 position: 'is-top',
@@ -107,7 +107,7 @@
                     else
                         this.timeTblId = ""
                 }).catch(error => {
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                           duration: 5500,
                           message: error.response.data.error.message,
                           position: 'is-top',
@@ -136,8 +136,8 @@
                     console.log('****', error);
                     this.timeTblId="";
                 });
-              this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.timeTblDt.dept)
-            },
+                this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.timeTblDt.dept)
+              },
             fNameChanged() {
                 this.timeTblDt.pFacultyId = this.facultyId;
                 console.log(this.timeTblDt.pFacultyId)
@@ -149,7 +149,7 @@
                 }},
 
         confirmDeleteTTbl(){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
             message:"This removes all Timetable Records also,<br/>Do you Really Want to Remove?",
             onConfirm:()=>{
               this.deleteTimeTable()
@@ -160,7 +160,7 @@
           this.$store.dispatch('ttStore/deleteTimeTable',this.timeTblId)
             .then(rr=>{
               this.timeTblId=""
-              this.$toast.open({
+              this.$buefy.toast.open({
                       duration: 5500,
                       message: "TimeTable Removed Successfully",
                       position: 'is-top',
@@ -168,7 +168,7 @@
               });
             })
             .catch(error=>{
-              this.$toast.open({
+              this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',

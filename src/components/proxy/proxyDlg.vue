@@ -10,12 +10,12 @@
                 {{ff.title}} {{ff.firstName}} {{ff.middleName}} {{ff.lastName}}-
                 <template v-if="ff.contact">{{ff.contact}}</template>
               </p>
-            </div>
 
+            </div>
             <div class="is-radiusless box">
             <b-field grouped>
                 <b-field label="Department" expanded>
-                    <b-select disabled  @input="deptChanged" v-model="proxyDetail.fOwnerDeptid" expanded required>
+                    <b-select @input="deptChanged" v-model="proxyDetail.fOwnerDeptid" expanded required>
                         <option v-for="dd in departmentList" :value="dd.deptId">{{dd.deptName}}({{dd.deptAlias}})</option>
                    </b-select>
                 </b-field>
@@ -66,7 +66,7 @@
               return config.dt_list.rowh
             },
             facultyList(){
-              return this.$store.state.employeeStore.facultyList
+              return this.$store.getters['employeeStore/getFacultyListForProxy']
             },
             busyFacultyList(){
               return this.$store.getters['ttStore/busyFacultyList']
@@ -82,6 +82,8 @@
             })
           }
         },
+
+
         mounted() {
           if(this.proxyDetail.fDeptId==-1){
               this.$store.dispatch('proxyStore/get_faculty_dept',this.proxyDetail.fFacultyid)
@@ -94,10 +96,11 @@
             }
             this.proxyDetail.proxyDate=new Date(this.proxyDetail.proxyDate)
             this.$store.dispatch('load_dept_list');
+            this.$store.dispatch('employeeStore/load_proxyfacultylist_by_dept',this.proxyDetail.fOwnerDeptid)
         },
         methods: {
-            deptChanged() {
-                this.$store.dispatch('employeeStore/load_facultylist_by_dept',this.dept)
+            deptChanged(dept) {
+                this.$store.dispatch('employeeStore/load_proxyfacultylist_by_dept',dept)
             },
             loadBusyFacultyList(load){
                 const ob={
@@ -106,6 +109,8 @@
                   ttStartTime:load.ttStartTime,
                   ttEndTime:load.ttEndTime
                 }
+
+
                 this.$store.dispatch('ttStore/loadBusyFacultyList',ob)
             },
           getLoadDetail(load){
@@ -139,7 +144,7 @@
                 }
                 this.$store.dispatch('proxyStore/update_proxy_detail',dt)
                   .then(rr=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration: 5500,
                       message: 'ProxyDetail Updated',
                       position: 'is-top',
@@ -149,7 +154,7 @@
                     this.$parent.close()
                   })
                   .catch(error=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',
@@ -172,7 +177,7 @@
                 }
                 this.$store.dispatch('proxyStore/save_proxy_detail',dt)
                   .then(rr=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration: 5500,
                       message: 'Load Adjusted',
                       position: 'is-top',
@@ -181,7 +186,7 @@
                     this.$parent.close()
                   })
                   .catch(error=>{
-                    this.$toast.open({
+                    this.$buefy.toast.open({
                       duration: 5500,
                       message: error.response.data.error.message,
                       position: 'is-top',

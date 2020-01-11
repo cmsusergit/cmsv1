@@ -2,15 +2,28 @@ import apiObject from '@/dataserve/student_serve.js'
 import _ from 'lodash'
 
 const state = {
+  attndList:null,
+  summaryAttndList:null,
   studentNameList:null
 };
+
 const getters = {
+  attndList:state=>{return state.attndList},
+  summaryAttndList:state=>{return state.summaryAttndList},
+
+  studentNameList:state=>{return state.studentNameList}
 };
 const mutations = {
+
     SET_STUDENT_NAME_LIST:(state,dt)=>{
       state.studentNameList=dt
+    },
+    SET_SUMMARY_ATTND_LIST:(state,dt)=>{
+      state.summaryAttndList=dt
+    },
+    SET_ATTND_LIST:(state,dt)=>{
+      state.attndList=dt
     }
-
 };
 const actions = {
 classScheduleExist:({commit},ob)=>{
@@ -30,6 +43,19 @@ classScheduleExist:({commit},ob)=>{
           reject(error)
         })
     });
+},
+getSummaryAttandanceReport:({commit},ob)=>{
+    const url1 = '/TimeTableInfos/getSummaryStudentAttendance/';
+    apiObject.post(url1,{detail:ob})
+      .then(rr=>{
+        if(rr.data){
+          commit("SET_SUMMARY_ATTND_LIST",rr.data.summaryList)
+        }
+      })
+      .catch(error=>{
+        console.log('****',error);
+        commit("SET_SUMMARY_ATTND_LIST",null)
+      })
 },
 getAttdnReport:({commit},id)=>{
       const url1 = '/TimetableRecordInfos/getAttendanceList/'+id;
@@ -91,7 +117,6 @@ load_attendance:({commit},dt)=>{
             apiObject.get(url1)
             .then(rr=>{
                 if(rr.data){
-                    console.log('++++',JSON.stringify(rr.data))
 //                  const tempurl=url1+rr.data.csId+'/attndanceInfos/'
 //                  console.log(dt.studentList);
 //                  apiObject.post(tempurl,dt.studentList)
@@ -105,14 +130,15 @@ load_attendance:({commit},dt)=>{
 //                    })
                 }
       })
+
       .catch(error=>{
         console.log('****',error);
         reject(error)
       });
 
+
     });
 },
-
 getAttdByForClasswiseReport:({commit},input)=>{
       const url1 = 'TimeTableInfos/getAttdByForClasswiseReport'
       return new Promise((resolve,reject)=>{
@@ -129,13 +155,6 @@ getAttdByForClasswiseReport:({commit},input)=>{
       })
 },
 getStudentAttdnReportBySubject:({commit},input)=>{
-
-
-
-
-
-
-
       const url1 = '/TimeTableInfos/getStudentAttdBySubjectId'
       return new Promise((resolve,reject)=>{
         apiObject.post(url1,{inputOb:input})
@@ -149,6 +168,37 @@ getStudentAttdnReportBySubject:({commit},input)=>{
             reject(error)
           })
       })
+},
+getStudentAttdByFaculty:({commit},input)=>{
+      const url1 = 'TimeTableInfos/getStudentAttdByFaculty'
+      return new Promise((resolve,reject)=>{
+        if(input.loadDetail.fBatchId==-1)
+          input.loadDetail=_.pick(input.loadDetail,['ayId','fClassId','fSubjectId','ttLoadType','fFacultyId'])
+        apiObject.post(url1,{inputOb:input})
+          .then(rr=>{
+            if(rr.data){
+              resolve(rr.data.attndList)
+            }
+          })
+          .catch(error=>{
+            console.log('****',error);
+            reject(error)
+          })
+      })
+},
+
+getAttdnListByCSID:({commit},id)=>{
+      const url1 = '/DdClassSchedules/'+id+'/attndanceInfos/'
+      apiObject.get(url1)
+          .then(rr=>{
+            if(rr.data){
+              commit('SET_ATTND_LIST',rr.data)
+            }
+          })
+          .catch(error=>{
+              console.log('****',error)
+              commit('SET_ATTND_LIST',null)
+          })
 }
 }
 export default {

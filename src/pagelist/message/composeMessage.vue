@@ -80,7 +80,7 @@ sendMessage(){
       })
       .then(rr=>{
         console.log('****',JSON.stringify(rr.data));
-        this.$toast.open({
+        this.$buefy.toast.open({
           duration:5500,
           message:(rr.data.response.status=="error")?rr.data.response.details:rr.data.response.id,
           position:'is-top',
@@ -89,7 +89,7 @@ sendMessage(){
       })
       .catch(error=>{
         console.log('****',error);
-        this.$toast.open({
+        this.$buefy.toast.open({
             duration:5500,
             message:error,
             position:'is-top',

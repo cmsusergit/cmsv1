@@ -108,7 +108,7 @@ export default {
         this.fileName=""
       })
       .catch(error=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',
@@ -129,7 +129,7 @@ export default {
       .then(rr=>{
       })
       .catch(error=>{
-        this.$toast.open({
+        this.$buefy.toast.open({
             duration: 5500,
             message: error.response.data.error.message,
             position: 'is-top',

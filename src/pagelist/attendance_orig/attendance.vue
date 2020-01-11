@@ -189,7 +189,7 @@ export default {
       }
       this.$store.dispatch('attendanceStore/save_attendance',dt).
           then(rr=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
                   duration: 5500,
                   message: "Attendance Submitted",
                   position: 'is-top',
@@ -200,7 +200,7 @@ export default {
             this.$router.push({name:'AttendanceDashboard'})
           })
           .catch(error=>{
-            this.$toast.open({
+            this.$buefy.toast.open({
               duration: 5500,
               message: error.response.data.error.message,
               position: 'is-top',

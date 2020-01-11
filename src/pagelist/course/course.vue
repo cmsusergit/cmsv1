@@ -61,12 +61,12 @@ export default{
     },
     methods: {
         removeCourse(id){
-          this.$dialog.confirm({
+          this.$buefy.dialog.confirm({
                     message: 'Do you Really want to Delete course?',
                     onConfirm: () => {
                         this.$store.dispatch('locStore/remove_course',id)
                         .then(rr=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "course Removed Successfully",
                                   position: 'is-top',
@@ -75,7 +75,7 @@ export default{
                               this.loading=false;
                         })
                         .catch(error=>{
-                          this.$toast.open({
+                          this.$buefy.toast.open({
                                   duration: 5500,
                                   message: "Error in Removing Course\n"+error.response.data.error.message,
                                   position: 'is-top',

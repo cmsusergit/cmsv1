@@ -74,12 +74,12 @@ export default{
                       this.roleForUser=user
                     },
                     removeUser(id){
-                      this.$dialog.confirm({
+                      this.$buefy.dialog.confirm({
                               message: 'Do you Really want to Delete Department?',
                               onConfirm: () => {
                                     this.$store.dispatch('userAccountStore/delete_user_account',id)
                                     .then(response=>{
-                                      this.$toast.open({
+                                      this.$buefy.toast.open({
                                               duration: 5500,
                                               message: "User with Id " + id + " Deleted",
                                               position: 'is-top',
@@ -88,7 +88,7 @@ export default{
                                           this.$store.dispatch('userAccountStore/load_user_list')
                                     })
                                     .catch(error=>{
-                                      this.$toast.open({
+                                      this.$buefy.toast.open({
                                              duration: 5500,
                                              message: error,
                                              position: 'is-top',

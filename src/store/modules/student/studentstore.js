@@ -14,6 +14,10 @@ const getters = {
   getAllocatedStudentList:state=>{
     return state.allocatedStudentList
   },
+  getStudentCount:state=>deptId=>{
+    console.log(state.studentList.length);
+    return _.countBy(state.studentList,{fDeptId:deptId})
+  },
   getStudentList:state=>{
     return state.studentList
   }
@@ -64,7 +68,8 @@ const actions = {
                 if(!list1)
                   return
                 list1.map(ob=>{
-                  mergedList.push(ob.studentInfo)
+                  if(ob && ob.studentInfo)
+                    mergedList.push(ob.studentInfo)
                 })
                 mergedList=_.uniqBy(mergedList,'stuEnroll')
                 context.commit('SET_STUDENT_LIST',mergedList)
@@ -76,26 +81,28 @@ const actions = {
             });
   },
   load_student_list:function(context,listBy){
-        let url1 = '/StudentInfos?filter=';
-              let temp=new Array();
-              if(listBy.dept!=='All'){
-                temp.push({fDeptId:listBy.dept});
-              }
-              if(listBy.course!=='All'){
-                temp.push({fCourseId:listBy.course});
-              }
-              if(listBy.sem!=='All'){
-                temp.push({fcurrsem:listBy.sem});
-              }
-              if(temp.length!=0){
-                const ob={where:{and:temp}};
-                url1+=JSON.stringify(ob)
-              }
-              // if(listBy.class!=='All'){
-              //   temp.push({fClassId:listBy.class});
-              // }
-              if(listBy.sem!=='All'){
-                temp.push({fcurrsem:listBy.sem});
+              let url1 = '/StudentInfos?filter=';
+              if(listBy){
+                let temp=new Array();
+                if(listBy.dept!=='All'){
+                  temp.push({fDeptId:listBy.dept});
+                }
+                if(listBy.course!=='All'){
+                  temp.push({fCourseId:listBy.course});
+                }
+                if(listBy.sem!=='All'){
+                  temp.push({fcurrsem:listBy.sem});
+                }
+                // if(listBy.class!=='All'){
+                //   temp.push({fClassId:listBy.class});
+                // }
+                if(listBy.sem!=='All'){
+                  temp.push({fcurrsem:listBy.sem});
+                }
+                if(temp.length!=0){
+                  const ob={where:{and:temp}};
+                  url1+=JSON.stringify(ob)
+                }
               }
             state.loading=true
             console.log(`----${url1}----`);
@@ -107,6 +114,7 @@ const actions = {
               state.error=error;
             });
   },
+
   load_student_attend_list:function({commit},listBy){
     let url1 = '/StudentInfos?filter=';
       const ob={where:listBy};
@@ -209,11 +217,14 @@ const actions = {
           })
       })
   },
+
+
   update_student_info({commit},studentInfo){
     const id= studentInfo.stuId
     const url1="/StudentInfos/"+id
     console.log('****',url1);
-        apiObject.put(url1,studentInfo)
+    return new Promise(function(resolve, reject) {
+         apiObject.put(url1,studentInfo)
           .then(rr=>{
             resolve(rr.data)
           })
@@ -221,6 +232,7 @@ const actions = {
             console.log('****',error);
             reject(error)
           })
+        });
   },
   remove_student_info({commit},id){
       const url1="/StudentInfos/"+id;
@@ -241,6 +253,15 @@ const actions = {
           console.log('****',error);
           reject(error)
         })
+      })
+  },
+  remove_student_photo({commit},path){
+    apiObject.delete('/containers/student_photo/files/'+path)
+      .then(rr=>{
+        console.log('****',rr);
+      })
+      .catch(error=>{
+        console.log('****',error);
       })
   },
   get_student_by_id({commit},id){

@@ -1,4 +1,4 @@
-<template> 
+<template>
     <div class="dashboard is-radiusless box boxbg" style="width:100%;height:100%;">
 
         <div v-if="isAuthorizedRoleList(['EMPLOYEE'])">
@@ -12,7 +12,7 @@
         </div>
 
       </div>
-</template>
+</template> 
 <script>
     import userMxn from'@/mixin/user'
     import StudentDashboard from '@/pagelist/dashboard/student'

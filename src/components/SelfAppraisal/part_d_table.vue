@@ -2,7 +2,7 @@
     <div style="width:100%;overflow:auto;">
 
     <b-loading :active.sync="loading"></b-loading>
-    <div style="font-size:87%" class="has-text-weight-bold">
+    <div class="has-text-weight-bold">
       <table class="table is-bordered is-fullwidth">
         <thead>
           <th width="40">Sr.</th>
@@ -19,8 +19,10 @@
           	<td>{{param.apiMetaPerpt}}</td> -->
           <td class="is-paddingless">
             <ul>
+
             <li v-for="indx in Math.floor(param.apiMetaMaxpt/param.apiMetaPerpt)" :key="indx" class="is-radiusless is-marginless box has-text-centered">
-                <SelfAppraisalPartDTableRecord :proofIndex="indx" :apiRecord="getAPIRecord(param,indx)"/>
+
+                <SelfAppraisalPartDTableRecord :proofIndex="sfSectionId+'_'+(index+1)" :apiRecord="getAPIRecord(param,indx)"/>
             </li>
           </ul>
         </td>
@@ -52,6 +54,22 @@ export default {
   },
   watch:{
     user(){
+      this.loadDt()
+    },
+  },
+  mounted()
+  {
+    this.$store.dispatch('selfAppraisalStore/load_param_list',{ayId:this.sfAyid,apiMetaType:this.apiFormType,sectionId:this.sfSectionId})
+      .then(rr=>{
+          this.paramList=rr;
+          this.loadDt()
+      })
+      .catch(error=>{
+          console.log('****',error);
+      })
+  },
+  methods: {
+    loadDt(){
       this.$store.dispatch('selfAppraisalStore/load_param_list',{ayId:this.sfAyid,apiMetaType:this.apiFormType,sectionId:this.sfSectionId})
         .then(rr=>{
             this.paramList=rr;
@@ -75,18 +93,6 @@ export default {
         })
         this.loadAPIEmployeeList()
     },
-  },
-  mounted()
-  {
-    this.$store.dispatch('selfAppraisalStore/load_param_list',{ayId:this.sfAyid,apiMetaType:this.apiFormType,sectionId:this.sfSectionId})
-      .then(rr=>{
-          this.paramList=rr;
-      })
-      .catch(error=>{
-          console.log('****',error);
-      })
-  },
-  methods: {
     getAPIRecord(p1,index){
       const ob={
         apiAyearId:1,

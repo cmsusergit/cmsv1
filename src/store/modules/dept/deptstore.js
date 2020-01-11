@@ -9,7 +9,7 @@ const mutations = {
 const actions = {
 ADD_DEPT_INFO({commit},deptInfo){
   return new Promise((resolve,reject)=>{
-    const url1="/DepartmentInfos";
+    const url1="/DepartmentInfos"
 
     deptInfo.deptId=0;
     apiObject.post(url1,deptInfo).then(response => {

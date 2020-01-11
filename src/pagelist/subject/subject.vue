@@ -6,9 +6,22 @@
         </div>
         <router-link to="/addupdatesubject" class="button  is-pulled-right is-primary">Add Subject</router-link>
         <div class="is-clearfix" style="margin-bottom: .5em;padding-bottom:.4em;"></div>
+
+
+
+
+
+        <div class="is-radiusless box">
+          <b-field label="Department" expanded>
+              <b-select @input="deptChanged" v-model="deptId" expanded>
+                <option value="-1">All</option>
+                <option v-for="dp in departmentList" :value="dp.deptId">{{dp.deptName}}</option>
+              </b-select>
+          </b-field>
+        </div>
         <div class="tablebox">
             <b-table class="is-radiusless box"
-                     :data="subjectList"
+                     :data="deptId==-1?subjectList:subjectListByDept"
                      :paginated=true
                      :per-page=20
                      :loading='loading'>
@@ -34,17 +47,9 @@
                             {{ new Date(props.row.subjectEffectiveFrom).toLocaleDateString() }}
                         </span>
                     </b-table-column> -->
-
-
-
-
                     <b-table-column field="subjectType" label="Subject Type" sortable>
                         {{ props.row.subType }}
                     </b-table-column>
-
-
-
-
                     <b-table-column field="subjectCourse" label="Department" sortable>
                         {{deptNameById(props.row.subjectDept)}}
                       </b-table-column>
@@ -72,24 +77,28 @@ import {mapState,mapGetters} from 'vuex'
                 name: 'StudentManagement',
                 data() {
                     return {
-                        loading:false
-                    };
+                        loading:false,
+                        deptId:-1,
+                        subjectListByDept:'',
+                        listBy:false
+                    }
                 },
                 computed:{
                   ...mapState({
                     courseList:state=>state.courseList,
                     deptList:state=>state.departmentList,
                     subjectList:state=>state.subjectStore.subjectList,
+                    departmentList:state=>state.departmentList
                   })
                 },
                 methods: {
                     removeSubject(id){
-                      this.$dialog.confirm({
+                      this.$buefy.dialog.confirm({
                               message: 'Do you Really want to Delete Department?',
                               onConfirm: () => {
                                     this.$store.dispatch('subjectStore/DELETE_SUBJECT_INFO',id)
                                     .then(response=>{
-                                      this.$toast.open({
+                                      this.$buefy.toast.open({
                                               duration: 5500,
                                               message: "Subject with Id " + id + " Deleted",
                                               position: 'is-top',
@@ -98,7 +107,7 @@ import {mapState,mapGetters} from 'vuex'
                                           this.$store.dispatch('subjectStore/LOAD_SUBJECT_LIST')
                                     })
                                     .catch(error=>{
-                                      this.$toast.open({
+                                      this.$buefy.toast.open({
                                              duration: 5500,
                                              message: error,
                                              position: 'is-top',
@@ -127,6 +136,9 @@ import {mapState,mapGetters} from 'vuex'
                     updateSubject(id){
                       this.$router.push({name:'AddUpdateSubject',params:{id:id}})
                       this.$store.dispatch('subjectStore/UPDATE_SUBJECT_INFO');
+                    },
+                    deptChanged(dept){
+                        this.subjectListByDept=_.filter(this.subjectList,ob=>{return ob.subjectDept==this.deptId})
                     }
                 },
                 mounted() {

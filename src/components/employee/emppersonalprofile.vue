@@ -67,16 +67,18 @@
           <b-input v-model="empProfileInfo.address" type='textarea'></b-input>
         </b-field>
         <b-field class="file">
-              <b-upload @input="photoChanged" v-model="file" accept="image/png">
-                  <a class="button is-primary">
+              <b-upload @input="photoChanged" v-model="file" accept="image/*">
+                  <a class="button is-info">
                       <b-icon icon="upload"></b-icon>
                       <span>Upload Photo</span>
                   </a>
               </b-upload>
 
-              <figure v-if="image" class="image is-128x128" style="margin-left:1em;border:1px solid grey">
-                <img :src="getImageURL" width="100px" alt="photo">
-              </figure>
+              <img :src="getImageURL" width="100px" style="margin-left:0.5em;border:1px solid;">
+<!--
+              <figure v-if="image" class="image is-128x128" style="margin-left:1em;">
+                <img :src="getImageURL" height="128px" width="128px" alt="photo">
+              </figure> -->
         </b-field>
         <b-field grouped>
             <b-field label="Blood Group" expanded>
@@ -148,7 +150,7 @@ export default {
           designationList:state=>state.designationStore.designationList
         }),
         getImageURL(){
-            return config.db_configuration.baseURL+'/containers/test1/download/'+this.image
+            return config.db_configuration.baseURL+'/containers/employee_photo/download/'+this.image
         }
     },
         methods:{
@@ -156,13 +158,14 @@ export default {
             this.uploadPhoto(ee)
           },
           uploadPhoto(ee){
-            const url1="/containers/test1/upload"
+            const url1="/containers/employee_photo/upload"
             let fd=new FormData()
-            const image=this.empProfileInfo.empCode+this.file[0].name.slice(this.file[0].name.lastIndexOf('.'),this.file[0].name.length);
+            const image=this.empProfileInfo.empCode+'_'+this.file[0].name
             fd.append('image',this.file[0],image)
             apiObject.post(url1,fd)
               .then(response=>{
                   this.image=image
+                  this.empProfileInfo.empPhoto=this.image
                 })
                 .catch(error=>{
                   console.log('----',error);
@@ -181,12 +184,12 @@ export default {
         },
         watch:{
           empProfileInfo(v1){
-                this.image=v1.empCode+'.png'
+                this.image=this.empProfileInfo.empPhoto
                 this.isTeaching=this.empProfileInfo.isTeaching?true:false
             }
         },
         created() {
-          this.image=this.empProfileInfo.empCode+'.png'
+          this.image=this.empProfileInfo.empPhoto
         },
         mounted() {
           this.$store.dispatch('designationStore/load_desg_list')
