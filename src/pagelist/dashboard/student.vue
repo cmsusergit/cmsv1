@@ -15,7 +15,6 @@
         </div>
         <div style="margin:.2em">
         </div>
-
         <div class="is-radiusless box">
           <ReportPanel :generateEvent="false"/>
         </div>
