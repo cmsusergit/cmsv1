@@ -19,7 +19,7 @@
     "html2canvas": "^1.0.0-alpha.12",
     "html2pdf.js": "^0.8.2",
     "image-to-base64": "^2.0.1",
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "jszip-utils": "^0.1.0",
     "pdfmake": "^0.1.58",
     "pdfvuer": "^1.4.0",
